@@ -1,8 +1,6 @@
 {
   "packageManager": "pnpm@10.6.1"
-}
-
-
+},
 {
   "name": "portfolio.com",
   "version": "0.1.0",
