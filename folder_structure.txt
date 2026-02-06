@@ -1,0 +1,245 @@
+.
+├── assets
+│   └── readme-photo.png
+├── components.json
+├── eslint.config.mjs
+├── folder_structure.txt
+├── LICENSE
+├── next-env.d.ts
+├── next.config.ts
+├── package.json
+├── pnpm-lock.yaml
+├── postcss.config.mjs
+├── public
+│   ├── final_memojis_ios.mp4
+│   ├── final_memojis.webm
+│   ├── landing-memojis.png
+│   ├── logo-saiganesh.svg
+│   ├── SaiGanesh_Nellore_Resume_Feb.pdf
+│   ├── saiganesh.jpeg
+│   ├── og-image.png
+│   ├── apple-touch-icon.svg
+│   ├── esports
+│   │   ├── team-photo.jpg (optional)
+│   │   └── tournament-win.jpg (optional)
+│   └── projects
+│       ├── optimaizer-preview.png
+│       ├── optimaizer-home.png
+│       ├── optimaizer-analysis.png
+│       ├── samesame-preview.png
+│       ├── samesame-chat.png
+│       ├── samesame-dashboard.png
+│       ├── isl-preview.png
+│       ├── isl-recognition.png
+│       ├── isl-demo.png
+│       ├── vision-preview.png
+│       ├── vision-experiment.png
+│       ├── brain-preview.png
+│       ├── brain-connectivity.png
+│       ├── deepfakes-preview.png
+│       ├── deepfakes-gan.png
+│       ├── ethereum-preview.png
+│       ├── ethereum-forecast.png
+│       ├── mario-preview.png
+│       ├── mario-gameplay.png
+│       ├── qa-preview.png
+│       ├── qa-system.png
+│       ├── speech-preview.png
+│       ├── speech-hmm.png
+│       ├── chatz-preview.png
+│       ├── chatz-blockchain.png
+│       ├── yolo-preview.png
+│       └── yolo-detection.png
+├── README.md
+├── SETUP_INSTRUCTIONS.md
+├── AI_TOOL_SETUP_REFERENCE.ts
+├── src
+│   ├── app
+│   │   ├── api
+│   │   │   └── chat
+│   │   │       ├── prompt.ts
+│   │   │       ├── route.ts
+│   │   │       └── tools
+│   │   │           ├── getContact.ts
+│   │   │           ├── getCrazy.ts
+│   │   │           ├── getFullTime.ts
+│   │   │           ├── getInternship.ts
+│   │   │           ├── getPresentation.ts
+│   │   │           ├── getProjects.ts
+│   │   │           ├── getResume.ts
+│   │   │           ├── getSkills.ts
+│   │   │           ├── getSports.ts
+│   │   │           └── getWeather.ts
+│   │   ├── chat
+│   │   │   └── page.tsx
+│   │   ├── glob.css
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── components
+│   │   ├── chat
+│   │   │   ├── chat-bottombar.tsx
+│   │   │   ├── chat-landing.tsx
+│   │   │   ├── chat-message-content.tsx
+│   │   │   ├── chat.tsx
+│   │   │   ├── HelperBoost.tsx
+│   │   │   ├── simple-chat-view.tsx
+│   │   │   └── tool-renderer.tsx
+│   │   ├── contact.tsx
+│   │   ├── crazy.tsx
+│   │   ├── FluidCursor.tsx
+│   │   ├── FullTimeCard.tsx
+│   │   ├── magicui
+│   │   │   └── animated-shiny-text.tsx
+│   │   ├── photos.tsx
+│   │   ├── presentation.tsx
+│   │   ├── projects
+│   │   │   ├── AllProjects.tsx
+│   │   │   ├── apple-cards-carousel.tsx
+│   │   │   └── Data.tsx
+│   │   ├── resume.tsx
+│   │   ├── skills.tsx
+│   │   ├── sport.tsx
+│   │   ├── theme-provider.tsx
+│   │   ├── ui
+│   │   │   ├── animated-testimonials.tsx
+│   │   │   ├── avatar.tsx
+│   │   │   ├── badge.tsx
+│   │   │   ├── button-with-tooltip.tsx
+│   │   │   ├── button.tsx
+│   │   │   ├── card.tsx
+│   │   │   ├── chat
+│   │   │   │   ├── chat-bubble.tsx
+│   │   │   │   └── message-loading.tsx
+│   │   │   ├── collapsible.tsx
+│   │   │   ├── compare.tsx
+│   │   │   ├── dialog.tsx
+│   │   │   ├── drawer.tsx
+│   │   │   ├── input-landing.tsx
+│   │   │   ├── scroll-area.tsx
+│   │   │   ├── separator.tsx
+│   │   │   ├── sonner.tsx
+│   │   │   ├── sparkles.tsx
+│   │   │   ├── textarea.tsx
+│   │   │   ├── ThemeToggle.tsx
+│   │   │   ├── tooltip.tsx
+│   │   │   └── turbo-title.tsx
+│   │   └── welcome-modal.tsx
+│   ├── hooks
+│   │   ├── use-FluidCursor.tsx
+│   │   └── use-outside-click.tsx
+│   └── lib
+│       └── utils.ts
+└── tsconfig.json
+
+18 directories, 90 files
+
+## 📁 Key Directory Explanations:
+
+### `/src/app/api/chat/`
+- **prompt.ts** - AI system prompt with Sai Ganesh's professional background
+- **route.ts** - Chat API endpoint handling OpenAI integration
+- **tools/** - Individual tool implementations for different portfolio sections
+
+### `/src/components/`
+- **FullTimeCard.tsx** - Job search status and availability card
+- **presentation.tsx** - About me / introduction section
+- **resume.tsx** - Resume viewer with download functionality
+- **skills.tsx** - Comprehensive skills matrix
+- **sport.tsx** - Northwestern esports achievements
+- **contact.tsx** - Contact information and social links
+- **projects/** - Project showcase with dynamic carousel
+
+### `/public/`
+- **Resume PDF** - Latest version: SaiGanesh_Nellore_Resume_Feb.pdf
+- **Photos** - Professional headshot and avatar images
+- **Logo** - Personal branding (logo-saiganesh.svg)
+- **projects/** - Screenshots and previews of all projects
+- **esports/** - Gaming and tournament photos (optional)
+
+### `/src/app/`
+- **page.tsx** - Landing page with AI chat interface
+- **chat/page.tsx** - Full chat experience page
+- **layout.tsx** - App layout with metadata and analytics
+- **globals.css** - Global styles and theme configuration
+
+## 🎯 File Naming Conventions:
+
+### Resume:
+- Format: `SaiGanesh_Nellore_Resume_[Month][Year].pdf`
+- Current: `SaiGanesh_Nellore_Resume_Feb.pdf`
+
+### Profile Images:
+- Professional photo: `saiganesh.jpeg`
+- Landing avatar: `landing-memojis.png`
+- Logo: `logo-saiganesh.svg`
+
+### Project Screenshots:
+- Preview: `[project-name]-preview.png` (for carousel cards)
+- Details: `[project-name]-[feature].png` (for modal content)
+
+## 🔧 Important Configuration Files:
+
+- **package.json** - Dependencies and scripts
+- **tsconfig.json** - TypeScript configuration
+- **next.config.ts** - Next.js configuration
+- **tailwind.config.ts** - Tailwind CSS customization
+- **components.json** - shadcn/ui component configuration
+
+## 📝 Documentation Files:
+
+- **README.md** - Project overview and features
+- **SETUP_INSTRUCTIONS.md** - Deployment and setup guide
+- **LICENSE** - MIT License
+- **folder_structure.txt** - This file
+
+## 🚀 AI Tool Structure:
+
+All tools follow the same pattern:
+```
+/tools/
+  ├── getProjects.ts      - Project showcase
+  ├── getResume.ts        - Resume display
+  ├── getSkills.ts        - Skills matrix
+  ├── getContact.ts       - Contact info
+  ├── getPresentation.ts  - About me
+  ├── getSports.ts        - Esports achievements
+  ├── getFullTime.ts      - Job search card
+  ├── getInternship.ts    - Redirects to full-time
+  ├── getCrazy.ts         - Fun facts
+  └── getWeather.ts       - Weather info
+```
+
+Each tool exports:
+- **description** - When to use this tool
+- **parameters** - Input schema (usually empty)
+- **execute** - Function that returns content
+
+## 💡 Adding New Content:
+
+### New Project:
+1. Add images to `/public/projects/`
+2. Update `Data.tsx` with project details
+3. AI automatically includes it in responses
+
+### New Skill:
+1. Update `skills.tsx` component
+2. Update `prompt.ts` system message
+3. AI learns from updated context
+
+### New Experience:
+1. Update resume PDF
+2. Update `prompt.ts` work experience section
+3. AI incorporates new experience
+
+## 🎨 Theme Customization:
+
+- Colors: `tailwind.config.ts`
+- Dark mode: `theme-provider.tsx`
+- Global styles: `globals.css`
+
+## 📊 Analytics:
+
+- Google Analytics: `layout.tsx`
+- Vercel Analytics: Built-in
+- Update tracking IDs before deployment
