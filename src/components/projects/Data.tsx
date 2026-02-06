@@ -1,12 +1,33 @@
 // File: Data.tsx
 
 import Image from 'next/image';
-import { ChevronRight, Link, ExternalLink, Github } from 'lucide-react';
+import { ChevronRight, ExternalLink, Github } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+
+// --- TYPES ---
+type ProjectImage = {
+  src: string;
+  alt: string;
+};
+
+type ProjectLink = {
+  name: string;
+  url: string;
+};
+
+type Project = {
+  title: string;
+  description: string;
+  techStack: string[];
+  date: string;
+  links: ProjectLink[];
+  images: ProjectImage[];
+  liveUrl?: string;
+};
 
 // --- PROJECT DATABASE ---
 // This array holds the detailed information for each project.
-const PROJECT_CONTENT = [
+const PROJECT_CONTENT: Project[] = [
   {
     title: 'ResumeBoost AI (OptimAIzer)',
     description:
@@ -199,7 +220,8 @@ const PROJECT_CONTENT = [
       },
     ],
     images: [],
-    liveUrl: 'https://saiganesh02.github.io/Time-Series-Forecasting-based-on-Ethereum-Prices/',
+    liveUrl:
+      'https://saiganesh02.github.io/Time-Series-Forecasting-based-on-Ethereum-Prices/',
   },
   {
     title: 'Super Mario RL Agent (DDQN)',
@@ -365,7 +387,7 @@ const ProjectContent = ({ project }: { project: ProjectProps }) => {
             <span>{projectData.date}</span>
           </div>
 
-          <p className="text-secondary-foreground font-sans text-base leading-relaxed md:text-lg">
+          <p className="font-sans text-base leading-relaxed text-secondary-foreground md:text-lg">
             {projectData.description}
           </p>
 
@@ -391,11 +413,11 @@ const ProjectContent = ({ project }: { project: ProjectProps }) => {
       {/* Links section */}
       {projectData.links && projectData.links.length > 0 && (
         <div className="mb-12">
-          <div className="px-6 mb-4 flex items-center gap-2">
+          <div className="mb-4 flex items-center gap-2 px-6">
             <h3 className="text-sm tracking-wide text-neutral-500 dark:text-neutral-400">
               Project Links
             </h3>
-            <ExternalLink className="text-muted-foreground w-4 h-4" />
+            <ExternalLink className="h-4 w-4 text-muted-foreground" />
           </div>
           <Separator className="my-4" />
           <div className="space-y-3">
@@ -405,7 +427,7 @@ const ProjectContent = ({ project }: { project: ProjectProps }) => {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group bg-[#F5F5F7] flex items-center justify-between rounded-xl p-4 transition-colors hover:bg-[#E5E5E7] dark:bg-neutral-800 dark:hover:bg-neutral-700"
+                className="group flex items-center justify-between rounded-xl bg-[#F5F5F7] p-4 transition-colors hover:bg-[#E5E5E7] dark:bg-neutral-800 dark:hover:bg-neutral-700"
               >
                 <div className="flex items-center gap-3">
                   {link.name.includes('GitHub') ? (
@@ -425,15 +447,15 @@ const ProjectContent = ({ project }: { project: ProjectProps }) => {
       {/* Live Preview Section */}
       {projectData.liveUrl && (
         <div className="space-y-4">
-          <div className="px-6 mb-4 flex items-center gap-2">
+          <div className="mb-4 flex items-center gap-2 px-6">
             <h3 className="text-sm tracking-wide text-neutral-500 dark:text-neutral-400">
               Live Preview
             </h3>
           </div>
-          <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800">
+          <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-neutral-100 dark:bg-neutral-800">
             <iframe
               src={projectData.liveUrl}
-              className="w-full h-full border-0"
+              className="h-full w-full border-0"
               title={`${projectData.title} Preview`}
               loading="lazy"
             />
@@ -483,7 +505,11 @@ export const data = [
     category: 'Computer Vision & Accessibility',
     title: 'Indian Sign Language Recognition System',
     src: 'https://github.com/SAIGANESH02/ISL-Recognition',
-    content: <ProjectContent project={{ title: 'Indian Sign Language Recognition System' }} />,
+    content: (
+      <ProjectContent
+        project={{ title: 'Indian Sign Language Recognition System' }}
+      />
+    ),
   },
   {
     category: 'Computer Vision & Neuroscience',
@@ -495,19 +521,27 @@ export const data = [
     category: 'Neuroscience & fMRI',
     title: 'Brain Functional Connectivity Analysis',
     src: 'https://saiganesh02.github.io/Predicting-the-decision-based-on-BFC/',
-    content: <ProjectContent project={{ title: 'Brain Functional Connectivity Analysis' }} />,
+    content: (
+      <ProjectContent project={{ title: 'Brain Functional Connectivity Analysis' }} />
+    ),
   },
   {
     category: 'Deep Learning & GANs',
     title: 'DeepFakes Generation Using DCGAN',
     src: 'https://saiganesh02.github.io/DeepFakes-Generation-Using-Deep-Learning/',
-    content: <ProjectContent project={{ title: 'DeepFakes Generation Using DCGAN' }} />,
+    content: (
+      <ProjectContent project={{ title: 'DeepFakes Generation Using DCGAN' }} />
+    ),
   },
   {
     category: 'Time Series & Crypto',
     title: 'Ethereum Price Time Series Forecasting',
     src: 'https://saiganesh02.github.io/Time-Series-Forecasting-based-on-Ethereum-Prices/',
-    content: <ProjectContent project={{ title: 'Ethereum Price Time Series Forecasting' }} />,
+    content: (
+      <ProjectContent
+        project={{ title: 'Ethereum Price Time Series Forecasting' }}
+      />
+    ),
   },
   {
     category: 'Reinforcement Learning',
@@ -519,7 +553,11 @@ export const data = [
     category: 'NLP & Question Answering',
     title: 'Question Answering System (Splinter & SpanBERT)',
     src: 'https://saiganesh02.github.io/QUESTION-ANSWERING-SYSTEM/',
-    content: <ProjectContent project={{ title: 'Question Answering System (Splinter & SpanBERT)' }} />,
+    content: (
+      <ProjectContent
+        project={{ title: 'Question Answering System (Splinter & SpanBERT)' }}
+      />
+    ),
   },
   {
     category: 'Speech Recognition',
