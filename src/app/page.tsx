@@ -133,7 +133,7 @@ export default function Home() {
           AI-Powered Portfolio
         </h1>
         <p className="text-muted-foreground mt-3 text-sm md:text-base max-w-xl">
-          Lead ML Engineer • AI Systems • LLM Optimization • Voice AI
+          Lead ML Engineer • Forward Deployed Engineer • MLOps • AI Systems • LLM Optimization • Voice AI
         </p>
       </motion.div>
 
@@ -204,11 +204,11 @@ export default function Home() {
         {/* Quick stats or badges */}
         <div className="mt-8 flex flex-wrap justify-center gap-4 text-xs md:text-sm text-muted-foreground">
           <div className="flex items-center gap-2 bg-white/30 dark:bg-neutral-800/30 backdrop-blur-sm px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-700">
-            <span className="font-semibold text-blue-600 dark:text-blue-400">3+ Years</span>
+            <span className="font-semibold text-blue-600 dark:text-blue-400">4+ Years</span>
             <span>Experience</span>
           </div>
           <div className="flex items-center gap-2 bg-white/30 dark:bg-neutral-800/30 backdrop-blur-sm px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-700">
-            <span className="font-semibold text-green-600 dark:text-green-400">12+</span>
+            <span className="font-semibold text-green-600 dark:text-green-400">15+</span>
             <span>AI/ML Projects</span>
           </div>
           <div className="flex items-center gap-2 bg-white/30 dark:bg-neutral-800/30 backdrop-blur-sm px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-700">

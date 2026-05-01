@@ -19,7 +19,7 @@ export const getFullTime = tool({
 **Location:** Chicago, IL (Open to relocation for the right opportunity)
 
 **What I Bring:**
-✅ 3+ years building production AI systems at scale
+✅ 4+ years building production AI systems at scale
 ✅ Voice AI serving 1000s of customers daily with sub-second latency
 ✅ Cost optimization: Reduced LLM costs from $300 to $40/day
 ✅ $300K+ savings through automated RAG evaluation pipelines

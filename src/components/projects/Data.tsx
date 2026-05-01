@@ -29,6 +29,113 @@ type Project = {
 // This array holds the detailed information for each project.
 const PROJECT_CONTENT: Project[] = [
   {
+    title: 'Wealth Advisor AI',
+    description:
+      'Intelligent multi-agent system that automates stock research by gathering real-time market data, SEC filings, and news to provide structured investment recommendations. Features three specialized agents (stock, SEC filing, news) coordinated by an orchestrator that synthesizes analysis into BUY/SELL/HOLD verdicts with confidence levels and source citations.',
+    techStack: [
+      'Python',
+      'LangChain',
+      'LangGraph',
+      'OpenAI GPT-4o',
+      'FAISS',
+      'Chainlit',
+      'SQLite',
+      'yfinance',
+      'pdfplumber',
+    ],
+    date: 'April 2026',
+    links: [
+      {
+        name: 'Live Demo',
+        url: 'https://saiganesh02.github.io/wealth-advisor-ai/',
+      },
+      {
+        name: 'GitHub Repository',
+        url: 'https://github.com/SAIGANESH02/wealth-advisor-ai',
+      },
+    ],
+    images: [],
+    liveUrl: 'https://saiganesh02.github.io/wealth-advisor-ai/',
+  },
+  {
+    title: 'RaceGPT',
+    description:
+      'Race radio intelligence copilot powered by a RAG pipeline. Processes race radio communications and provides strategic insights using retrieval-augmented generation. Features speech-to-text transcription, semantic search over radio logs, and real-time copilot responses for race strategy analysis.',
+    techStack: [
+      'Python',
+      'Azure OpenAI',
+      'Chainlit',
+      'sentence-transformers',
+      'scikit-learn',
+      'speechlib',
+      'RAG',
+    ],
+    date: 'February 2026',
+    links: [
+      {
+        name: 'Live Demo',
+        url: 'https://saiganesh02.github.io/RaceGPT/',
+      },
+      {
+        name: 'GitHub Repository',
+        url: 'https://github.com/SAIGANESH02/RaceGPT',
+      },
+    ],
+    images: [],
+    liveUrl: 'https://saiganesh02.github.io/RaceGPT/',
+  },
+  {
+    title: 'Voice AI Agent',
+    description:
+      'Azure Functions-based voice AI system designed for automotive dealerships. Handles inbound and outbound calls with natural language understanding, appointment scheduling, and CRM integration. Built with Twilio for telephony, GPT-4 for conversation, and LangChain for orchestration.',
+    techStack: [
+      'Python',
+      'Azure Functions',
+      'OpenAI GPT-4',
+      'Twilio',
+      'MySQL',
+      'LangChain',
+    ],
+    date: 'January 2026',
+    links: [
+      {
+        name: 'Live Demo',
+        url: 'https://saiganesh02.github.io/Voice_AI_Agent/',
+      },
+      {
+        name: 'GitHub Repository',
+        url: 'https://github.com/SAIGANESH02/Voice_AI_Agent',
+      },
+    ],
+    images: [],
+    liveUrl: 'https://saiganesh02.github.io/Voice_AI_Agent/',
+  },
+  {
+    title: 'Bitovi RAG Agent',
+    description:
+      'End-to-end RAG pipeline built with n8n workflows and PGVector for vector storage. Automates document ingestion, embedding generation, and retrieval-augmented generation for intelligent question answering over custom knowledge bases. Fully containerized with Docker for easy deployment.',
+    techStack: [
+      'n8n',
+      'PostgreSQL',
+      'PGVector',
+      'OpenAI',
+      'Docker',
+    ],
+    date: 'May 2025',
+    links: [
+      {
+        name: 'Live Demo',
+        url: 'https://saiganesh02.github.io/bitovi-rag/',
+      },
+      {
+        name: 'GitHub Repository',
+        url: 'https://github.com/SAIGANESH02/bitovi-rag',
+      },
+    ],
+    images: [],
+    liveUrl: 'https://saiganesh02.github.io/bitovi-rag/',
+  },
+  {
     title: 'ResumeBoost AI (OptimAIzer)',
     description:
       'Cloud-native application that transforms resumes into job-winning masterpieces by combining AI-driven PDF parsing, job description scraping, and tailored analysis—all powered by AWS cloud services. Uses GPT-4 API for intelligent optimization, Lambda Functions for serverless processing, and S3 for scalable storage.',
@@ -490,35 +597,43 @@ const ProjectContent = ({ project }: { project: ProjectProps }) => {
 // --- MAIN DATA EXPORT ---
 export const data = [
   {
+    category: 'AI & NLP',
+    title: 'Wealth Advisor AI',
+    src: 'https://saiganesh02.github.io/wealth-advisor-ai/',
+    content: <ProjectContent project={{ title: 'Wealth Advisor AI' }} />,
+  },
+  {
+    category: 'AI & NLP',
+    title: 'RaceGPT',
+    src: 'https://saiganesh02.github.io/RaceGPT/',
+    content: <ProjectContent project={{ title: 'RaceGPT' }} />,
+  },
+  {
+    category: 'AI & NLP',
+    title: 'Voice AI Agent',
+    src: 'https://saiganesh02.github.io/Voice_AI_Agent/',
+    content: <ProjectContent project={{ title: 'Voice AI Agent' }} />,
+  },
+  {
+    category: 'AI & NLP',
+    title: 'Bitovi RAG Agent',
+    src: 'https://saiganesh02.github.io/bitovi-rag/',
+    content: <ProjectContent project={{ title: 'Bitovi RAG Agent' }} />,
+  },
+  {
     category: 'AI & Cloud',
     title: 'ResumeBoost AI (OptimAIzer)',
     src: 'https://saiganesh02.github.io/OptimAIzer/',
     content: <ProjectContent project={{ title: 'ResumeBoost AI (OptimAIzer)' }} />,
   },
   {
-    category: 'AI & Mental Health',
-    title: 'Same Same Collective Chatbot',
-    src: 'https://github.com/SAIGANESH02/ChatbotPracticum',
-    content: <ProjectContent project={{ title: 'Same Same Collective Chatbot' }} />,
-  },
-  {
-    category: 'Computer Vision & Accessibility',
-    title: 'Indian Sign Language Recognition System',
-    src: 'https://github.com/SAIGANESH02/ISL-Recognition',
-    content: (
-      <ProjectContent
-        project={{ title: 'Indian Sign Language Recognition System' }}
-      />
-    ),
-  },
-  {
-    category: 'Computer Vision & Neuroscience',
+    category: 'Computer Vision',
     title: 'Vision with Lost Glasses',
     src: 'https://saiganesh02.github.io/Vision_with_Lost_Glasses',
     content: <ProjectContent project={{ title: 'Vision with Lost Glasses' }} />,
   },
   {
-    category: 'Neuroscience & fMRI',
+    category: 'Neuroscience & Data',
     title: 'Brain Functional Connectivity Analysis',
     src: 'https://saiganesh02.github.io/Predicting-the-decision-based-on-BFC/',
     content: (
@@ -526,7 +641,7 @@ export const data = [
     ),
   },
   {
-    category: 'Deep Learning & GANs',
+    category: 'Computer Vision',
     title: 'DeepFakes Generation Using DCGAN',
     src: 'https://saiganesh02.github.io/DeepFakes-Generation-Using-Deep-Learning/',
     content: (
@@ -534,7 +649,7 @@ export const data = [
     ),
   },
   {
-    category: 'Time Series & Crypto',
+    category: 'Neuroscience & Data',
     title: 'Ethereum Price Time Series Forecasting',
     src: 'https://saiganesh02.github.io/Time-Series-Forecasting-based-on-Ethereum-Prices/',
     content: (
@@ -550,7 +665,7 @@ export const data = [
     content: <ProjectContent project={{ title: 'Super Mario RL Agent (DDQN)' }} />,
   },
   {
-    category: 'NLP & Question Answering',
+    category: 'AI & NLP',
     title: 'Question Answering System (Splinter & SpanBERT)',
     src: 'https://saiganesh02.github.io/QUESTION-ANSWERING-SYSTEM/',
     content: (
@@ -560,7 +675,7 @@ export const data = [
     ),
   },
   {
-    category: 'Speech Recognition',
+    category: 'AI & NLP',
     title: 'Speech Recognition with HMM',
     src: 'https://saiganesh02.github.io/Speech-Recognition-with-HMM/',
     content: <ProjectContent project={{ title: 'Speech Recognition with HMM' }} />,
@@ -572,9 +687,25 @@ export const data = [
     content: <ProjectContent project={{ title: 'ChatZ - Decentralized Chat App' }} />,
   },
   {
-    category: 'Computer Vision & Detection',
+    category: 'Computer Vision',
     title: 'Object Detection using YOLO-V4',
     src: 'https://saiganesh02.github.io/Object-Detection-using-YOLO-V4/',
     content: <ProjectContent project={{ title: 'Object Detection using YOLO-V4' }} />,
+  },
+  {
+    category: 'AI & NLP',
+    title: 'Same Same Collective Chatbot',
+    src: 'https://github.com/SAIGANESH02/ChatbotPracticum',
+    content: <ProjectContent project={{ title: 'Same Same Collective Chatbot' }} />,
+  },
+  {
+    category: 'Computer Vision',
+    title: 'Indian Sign Language Recognition System',
+    src: 'https://github.com/SAIGANESH02/ISL-Recognition',
+    content: (
+      <ProjectContent
+        project={{ title: 'Indian Sign Language Recognition System' }}
+      />
+    ),
   },
 ];

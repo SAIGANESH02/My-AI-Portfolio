@@ -15,7 +15,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Sai Ganesh Nellore | Lead ML Engineer",
-  description: "Interactive AI-powered portfolio showcasing production-scale ML systems, LLM optimization, voice AI, and RAG solutions. Lead ML Engineer with 3+ years of experience in AI/ML deployment.",
+  description: "Interactive AI-powered portfolio showcasing production-scale ML systems, LLM optimization, voice AI, and RAG solutions. Lead ML Engineer with 4+ years of experience in AI/ML deployment.",
   keywords: [
     "Sai Ganesh Nellore",
     "Machine Learning Engineer",

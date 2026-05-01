@@ -31,7 +31,7 @@ const FullTimeCard = () => {
               Sai Ganesh Nellore
             </h2>
             <p className="text-muted-foreground text-sm font-medium">
-              Lead ML Engineer | 3+ Years Experience
+              Lead ML Engineer | 4+ Years Experience
             </p>
           </div>
         </div>
@@ -55,7 +55,7 @@ const FullTimeCard = () => {
           <div>
             <p className="text-foreground text-sm font-semibold">Experience</p>
             <p className="text-muted-foreground text-sm">
-              3+ Years in AI/ML Engineering & Production Systems
+              4+ Years in AI/ML Engineering & Production Systems
             </p>
           </div>
         </div>

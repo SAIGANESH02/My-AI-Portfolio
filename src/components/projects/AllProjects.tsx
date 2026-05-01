@@ -1,18 +1,17 @@
 "use client";
 import { data } from "@/components/projects/Data";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Github, 
-  ExternalLink, 
-  Play, 
-  Search, 
-  Code, 
-  Sparkles, 
+import {
+  Github,
+  ExternalLink,
+  Play,
+  Search,
+  Code,
+  Sparkles,
   TrendingUp,
   Eye,
   Star,
-  X,
-  ChevronRight
+  X
 } from "lucide-react";
 import { useState } from "react";
 
@@ -31,13 +30,6 @@ export default function AllProjects() {
     const matchesSearch = card.title.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
-
-  // Project stats
-  const stats = [
-    { icon: Code, label: "Total Projects", value: data.length, color: "text-emerald-600 dark:text-emerald-400" },
-    { icon: Sparkles, label: "AI/ML Projects", value: data.filter(d => d.category.includes("AI") || d.category.includes("ML") || d.category.includes("NLP")).length, color: "text-purple-600 dark:text-purple-400" },
-    { icon: TrendingUp, label: "Production Ready", value: data.filter(d => d.category.includes("AI") || d.category.includes("Full")).length, color: "text-blue-600 dark:text-blue-400" },
-  ];
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-white via-neutral-50 to-white dark:from-black dark:via-neutral-950 dark:to-black py-16 md:py-20">
@@ -65,35 +57,6 @@ export default function AllProjects() {
             </h2>
           </div>
 
-          {/* Description */}
-          <p className="text-base md:text-lg text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto leading-relaxed">
-            A collection of <span className="font-bold text-blue-600 dark:text-blue-400">12+ AI/ML projects</span> spanning voice AI, computer vision, NLP,
-            reinforcement learning, and blockchain. Each project demonstrates practical
-            applications of cutting-edge technologies in production environments.
-          </p>
-
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto mt-8">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white dark:bg-neutral-900 rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800 shadow-sm hover:shadow-xl transition-all hover:scale-105"
-              >
-                <div className="flex items-center gap-3 mb-2">
-                  <stat.icon className={`h-6 w-6 ${stat.color}`} />
-                  <span className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
-                    {stat.label}
-                  </span>
-                </div>
-                <div className="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
-                  {stat.value}+
-                </div>
-              </motion.div>
-            ))}
-          </div>
         </motion.div>
 
         {/* Search & Filter Section */}
