@@ -8,4 +8,4 @@ export const VISEME_SRCS: string[] = Array.from(
 /** Resting face — also the poster/preload image. */
 export const VISEME_IDLE = VISEME_SRCS[0];
 // Normalized openness of each frame (0 = closed, 1 = widest).
-export const VISEME_OPENNESS: number[] = [0.0, 0.0351, 0.278, 0.2869, 0.3645, 0.4613, 0.5466, 0.6294, 0.6735, 0.7447, 0.8885, 1.0];
+export const VISEME_OPENNESS: number[] = [0.0, 0.0124, 0.1199, 0.254, 0.2792, 0.3097, 0.3721, 0.4867, 0.5478, 0.6465, 0.8456, 1.0];

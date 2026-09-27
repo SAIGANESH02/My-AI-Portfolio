@@ -43,18 +43,29 @@ SIG = 72                            # signature resolution for pose comparison
 
 
 def analyse(path: str):
-    """Return (pose signature outside the mouth, mouth openness)."""
+    """Return (pose signature outside the mouth, mouth openness, mouth width).
+
+    Width separates a closed *smile* from a closed *pout* — both are near-zero
+    openness, but a smile is much wider. Without it the resting face ends up
+    being whichever frame happens to be most shut, which looked sullen.
+    """
     im = Image.open(path).crop(CONTENT).convert("L")
     small = np.asarray(im.resize((SIG, SIG), Image.BILINEAR), dtype=np.float32)
     top, bot = int(SIG * MOUTH_TOP), int(SIG * MOUTH_BOT)
     pose = np.concatenate([small[:top].ravel(), small[bot:].ravel()])
 
+    # Keep this crop tight to the lips. Widening it makes the dark region
+    # span the whole band on nearly every frame, and `width` stops telling a
+    # smile apart from a pout.
     w, h = im.size
-    mouth = np.asarray(
+    band = np.asarray(
         im.crop((int(w * 0.40), int(h * 0.55), int(w * 0.60), int(h * 0.72)))
     )
-    openness = float((mouth < 90).mean())
-    return pose, openness
+    dark = band < 90
+    openness = float(dark.mean())
+    cols = np.where(dark.any(axis=0))[0]
+    width = float((cols.max() - cols.min()) / band.shape[1]) if len(cols) else 0.0
+    return pose, openness, width
 
 
 def main() -> None:
@@ -69,9 +80,10 @@ def main() -> None:
         if not frames:
             raise SystemExit("no frames extracted")
 
-        poses, opens = zip(*(analyse(f) for f in frames))
+        poses, opens, widths = zip(*(analyse(f) for f in frames))
         poses = np.stack(poses)
         opens = np.array(opens)
+        widths = np.array(widths)
         print(f"{len(frames)} frames, openness {opens.min():.4f}..{opens.max():.4f}")
 
         full_span = opens.max() - opens.min()
@@ -101,14 +113,27 @@ def main() -> None:
               f"{distinct} distinct mouth shapes, span {span/full_span*100:.0f}% "
               "of full range")
 
-        # Evenly spaced targets, but never the same frame twice.
-        lo, hi = opens[members].min(), opens[members].max()
-        chosen: list[int] = []
-        for i in range(LEVELS):
+        m_lo, m_hi = opens[members].min(), opens[members].max()
+
+        # Resting face: the friendliest of the near-closed frames, not simply
+        # the most closed. This is the image the whole site sits on, so a
+        # closed smile beats a neutral pout even though both read as "shut".
+        quiet = members[opens[members] <= m_lo + 0.4 * (m_hi - m_lo)]
+        idle = int(quiet[np.argmax(widths[quiet])])
+        print(f"resting frame {idle}: openness {opens[idle]:.4f}, "
+              f"mouth width {widths[idle]:.3f} "
+              f"(most-closed was {int(members[np.argmin(opens[members])])} at "
+              f"width {widths[members[np.argmin(opens[members])]]:.3f})")
+
+        # Ramp upward from the resting face so frame 0 *is* the idle image and
+        # the transition into speech has nothing to jump over.
+        lo, hi = opens[idle], m_hi
+        chosen: list[int] = [idle]
+        for i in range(1, LEVELS):
             target = lo + (hi - lo) * i / (LEVELS - 1)
             order = members[np.argsort(np.abs(opens[members] - target))]
             for cand in order:
-                if int(cand) not in chosen:
+                if int(cand) not in chosen and opens[cand] >= lo:
                     chosen.append(int(cand))
                     break
         chosen.sort(key=lambda idx: opens[idx])
