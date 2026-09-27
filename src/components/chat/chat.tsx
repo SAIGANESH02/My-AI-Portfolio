@@ -297,7 +297,6 @@ const Chat = () => {
               <div className="relative">
                 <AvatarFace
                   mode={voiceLive ? 'voice' : isTalking ? 'text' : 'idle'}
-                  level={0}
                   levelRef={voice.levelRef}
                   size={hasActiveTool ? 80 : 112}
                   className={`shadow-sm ring-2 transition-all duration-300 ${

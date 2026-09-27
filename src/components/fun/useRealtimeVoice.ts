@@ -45,6 +45,7 @@ export function useRealtimeVoice({ onTool, onTurnComplete }: Options = {}) {
   const ctxRef = useRef<AudioContext | null>(null);
   const rafRef = useRef<number | null>(null);
   const timerRef = useRef<number | null>(null);
+  const deadlineRef = useRef(0);
 
   const cbRef = useRef({ onTool, onTurnComplete });
   cbRef.current = { onTool, onTurnComplete };
@@ -70,6 +71,13 @@ export function useRealtimeVoice({ onTool, onTurnComplete }: Options = {}) {
   }, []);
 
   useEffect(() => () => hangUp('idle'), [hangUp]);
+
+  // Enforce the cap here, not inside the timer's state updater. Calling a
+  // side effect from a setState updater is not guaranteed to run (and runs
+  // twice under StrictMode), which is why the call never auto-ended.
+  useEffect(() => {
+    if (phase === 'live' && secondsLeft <= 0) hangUp('ended');
+  }, [phase, secondsLeft, hangUp]);
 
   /** Upsert a streaming transcript line. */
   const pushDelta = useCallback(
@@ -249,16 +257,17 @@ export function useRealtimeVoice({ onTool, onTurnComplete }: Options = {}) {
       if (!sdp.ok) throw new Error('Voice connection was refused');
       await pc.setRemoteDescription({ type: 'answer', sdp: await sdp.text() });
 
+      // Deadline rather than a decrementing counter: an interval that drifts
+      // or gets throttled in a background tab would otherwise overrun the cap.
+      deadlineRef.current = Date.now() + seconds * 1000;
       setSecondsLeft(seconds);
       timerRef.current = window.setInterval(() => {
-        setSecondsLeft((s) => {
-          if (s <= 1) {
-            hangUp('ended');
-            return 0;
-          }
-          return s - 1;
-        });
-      }, 1000);
+        const left = Math.max(
+          0,
+          Math.ceil((deadlineRef.current - Date.now()) / 1000)
+        );
+        setSecondsLeft(left);
+      }, 250);
 
       setPhase('live');
     } catch (e) {

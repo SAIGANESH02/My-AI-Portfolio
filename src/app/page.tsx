@@ -8,7 +8,7 @@ import {
 import FluidCursor from '@/components/FluidCursor';
 import AvatarFace from '@/components/fun/AvatarFace';
 import ExtrasMenu from '@/components/fun/ExtrasMenu';
-import { VISEME_SHEET } from '@/components/fun/visemes';
+import { VISEME_IDLE } from '@/components/fun/visemes';
 import { Button } from '@/components/ui/button';
 import WelcomeModal from '@/components/welcome-modal';
 import { motion } from 'framer-motion';
@@ -79,7 +79,7 @@ export default function Home() {
     // Warm the one asset the avatar actually needs. This used to prefetch two
     // 3.1MB videos that no longer exist — the sprite sheet replaced them.
     const img = new window.Image();
-    img.src = VISEME_SHEET;
+    img.src = VISEME_IDLE;
   }, []);
 
   // Two fixes for the hero being cut off on short screens:
@@ -155,7 +155,7 @@ export default function Home() {
         <AvatarFace
           mode="idle"
           size={176}
-          className="shadow-lg sm:!h-[200px] sm:!w-[200px]"
+          className="shadow-lg"
         />
       </div>
 

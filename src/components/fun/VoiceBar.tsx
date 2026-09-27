@@ -42,7 +42,7 @@ const VoiceBar = ({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            onClick={onStop}
+            onClick={() => onStop()}
             className="flex items-center gap-2 rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-lg transition hover:bg-red-700"
           >
             <PhoneOff className="h-4 w-4" />
@@ -54,7 +54,7 @@ const VoiceBar = ({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            onClick={onStart}
+            onClick={() => onStart()}
             disabled={connecting}
             className="bg-background/70 hover:bg-accent flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm backdrop-blur transition-all hover:scale-105 disabled:opacity-60"
           >
