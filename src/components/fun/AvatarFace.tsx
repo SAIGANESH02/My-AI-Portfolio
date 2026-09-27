@@ -24,18 +24,25 @@ type Props = {
   onClick?: () => void;
 };
 
-/** Nearest frame for a normalized openness, using the real measured values. */
-function frameFor(openness: number) {
-  let best = 0;
-  let bestErr = Infinity;
-  for (let i = 0; i < VISEME_OPENNESS.length; i++) {
-    const err = Math.abs(VISEME_OPENNESS[i] - openness);
-    if (err < bestErr) {
-      bestErr = err;
-      best = i;
+/**
+ * Fractional frame position for a normalized openness.
+ *
+ * Returns the lower frame plus how far past it we are, so the two neighbouring
+ * shapes can be crossfaded. Snapping to the nearest frame instead makes 12
+ * discrete shapes read as a slideshow; blending them reads as movement.
+ */
+function framePosition(openness: number) {
+  const n = VISEME_OPENNESS.length;
+  if (openness <= VISEME_OPENNESS[0]) return { lo: 0, hi: 0, t: 0 };
+  for (let i = 1; i < n; i++) {
+    if (openness <= VISEME_OPENNESS[i]) {
+      const a = VISEME_OPENNESS[i - 1];
+      const b = VISEME_OPENNESS[i];
+      const t = b > a ? (openness - a) / (b - a) : 0;
+      return { lo: i - 1, hi: i, t };
     }
   }
-  return best;
+  return { lo: n - 1, hi: n - 1, t: 0 };
 }
 
 /** Decode every frame once so swapping src mid-speech never flickers. */
@@ -69,6 +76,7 @@ const AvatarFace = ({
   onClick,
 }: Props) => {
   const ref = useRef<HTMLImageElement>(null);
+  const topRef = useRef<HTMLImageElement>(null);
   const ringRef = useRef<HTMLSpanElement>(null);
   const modeRef = useRef(mode);
   const externalLevel = useRef(levelRef);
@@ -80,12 +88,17 @@ const AvatarFace = ({
 
     let raf = 0;
     let smoothed = 0;
-    let lastFrame = -1;
-    const started = performance.now();
+    let lastLo = -1;
+    let lastHi = -1;
+    let last = performance.now();
+    const started = last;
 
     const tick = (now: number) => {
-      let target = 0;
+      // Time-based easing so the motion is identical on 60Hz and 120Hz panels.
+      const dt = Math.min((now - last) / 1000, 0.1);
+      last = now;
 
+      let target = 0;
       if (modeRef.current === 'voice') {
         target = Math.min(Math.max(externalLevel.current?.current ?? 0, 0), 1);
       } else if (modeRef.current === 'text') {
@@ -95,12 +108,22 @@ const AvatarFace = ({
       }
 
       // Mouths open faster than they close; symmetric easing looks rubbery.
-      smoothed += (target - smoothed) * (target > smoothed ? 0.5 : 0.2);
+      const rate = target > smoothed ? 22 : 9;
+      smoothed += (target - smoothed) * (1 - Math.exp(-rate * dt));
 
-      const frame = frameFor(smoothed);
-      if (frame !== lastFrame && ref.current) {
-        ref.current.src = VISEME_SRCS[frame];
-        lastFrame = frame;
+      const { lo, hi, t } = framePosition(smoothed);
+      if (ref.current && topRef.current) {
+        // Only touch src when the pair changes; reassigning every frame would
+        // restart decoding and flicker.
+        if (lo !== lastLo) {
+          ref.current.src = VISEME_SRCS[lo];
+          lastLo = lo;
+        }
+        if (hi !== lastHi) {
+          topRef.current.src = VISEME_SRCS[hi];
+          lastHi = hi;
+        }
+        topRef.current.style.opacity = String(lo === hi ? 0 : t);
       }
 
       // Continuous motion cue alongside the discrete mouth steps — the ring
@@ -142,6 +165,18 @@ const AvatarFace = ({
           onClick ? 'cursor-pointer' : ''
         } ${className}`}
         style={{ width: size, height: size }}
+      />
+      {/* Crossfade layer: the next mouth shape, faded in by however far the
+          amplitude sits between the two. Turns 12 steps into smooth motion. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        ref={topRef}
+        src={VISEME_IDLE}
+        alt=""
+        aria-hidden
+        draggable={false}
+        className={`pointer-events-none absolute inset-0 rounded-full object-cover select-none ${className}`}
+        style={{ width: size, height: size, opacity: 0 }}
       />
     </span>
   );

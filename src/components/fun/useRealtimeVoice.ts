@@ -79,41 +79,96 @@ export function useRealtimeVoice({ onTool, onTurnComplete }: Options = {}) {
     if (phase === 'live' && secondsLeft <= 0) hangUp('ended');
   }, [phase, secondsLeft, hangUp]);
 
+  // Mirror of `turns` so updates can be computed outside a setState updater.
+  // Updaters must stay pure — notifying onTurnComplete from inside one is not
+  // guaranteed to run and fires twice under StrictMode.
+  const turnsRef = useRef<VoiceTurn[]>([]);
+  const commit = useCallback((next: VoiceTurn[]) => {
+    turnsRef.current = next;
+    setTurns(next);
+  }, []);
+
+  // A cancelled response can still emit its transcript.done after we've
+  // already closed the turn out on barge-in. Notify the history once per id,
+  // or the same line lands in the conversation twice.
+  const notifiedRef = useRef<Set<string>>(new Set());
+  const notifyOnce = useCallback((turn: VoiceTurn) => {
+    if (notifiedRef.current.has(turn.id)) return;
+    notifiedRef.current.add(turn.id);
+    cbRef.current.onTurnComplete?.(turn);
+  }, []);
+
   /** Upsert a streaming transcript line. */
   const pushDelta = useCallback(
     (id: string, role: VoiceTurn['role'], chunk: string) => {
-      setTurns((prev) => {
-        const i = prev.findIndex((t) => t.id === id);
-        if (i === -1) {
-          return [...prev, { id, role, text: chunk, partial: true }];
-        }
-        const next = [...prev];
-        next[i] = { ...next[i], text: next[i].text + chunk };
-        return next;
-      });
+      const prev = turnsRef.current;
+      const i = prev.findIndex((t) => t.id === id);
+      if (i === -1) {
+        commit([...prev, { id, role, text: chunk, partial: true }]);
+        return;
+      }
+      // Already closed out and handed to the history — appending now would
+      // show the line twice. Late deltas after a cancel are expected.
+      if (!prev[i].partial) return;
+
+      const next = [...prev];
+      next[i] = { ...next[i], text: next[i].text + chunk };
+      commit(next);
     },
-    []
+    [commit]
   );
 
   const finalize = useCallback(
     (id: string, role: VoiceTurn['role'], text?: string) => {
-      setTurns((prev) => {
-        const i = prev.findIndex((t) => t.id === id);
-        const done: VoiceTurn = {
-          id,
-          role,
-          text: (text ?? (i === -1 ? '' : prev[i].text)).trim(),
-          partial: false,
-        };
-        if (!done.text) return i === -1 ? prev : prev.filter((t) => t.id !== id);
-        cbRef.current.onTurnComplete?.(done);
-        if (i === -1) return [...prev, done];
+      const prev = turnsRef.current;
+      const i = prev.findIndex((t) => t.id === id);
+      const body = (text ?? (i === -1 ? '' : prev[i].text)).trim();
+
+      if (!body) {
+        // Nothing usable — drop the placeholder rather than leave it hanging.
+        if (i !== -1) commit(prev.filter((t) => t.id !== id));
+        return;
+      }
+      const done: VoiceTurn = { id, role, text: body, partial: false };
+      if (i === -1) commit([...prev, done]);
+      else {
         const next = [...prev];
         next[i] = done;
-        return next;
-      });
+        commit(next);
+      }
+      notifyOnce(done);
     },
-    []
+    [commit, notifyOnce]
+  );
+
+  /**
+   * Close out any turn still marked partial.
+   *
+   * A barge-in cancels the in-flight response, so its transcript.done event
+   * never arrives. Without this the turn stays partial forever: it never
+   * reaches the history, and the live caption keeps rendering it while newer
+   * turns appear below — which looked like the transcript was duplicating.
+   */
+  const finalizeDangling = useCallback(
+    (role?: VoiceTurn['role']) => {
+      const stale = turnsRef.current.filter(
+        (t) => t.partial && (!role || t.role === role)
+      );
+      if (!stale.length) return;
+
+      const next = turnsRef.current
+        .map((t) =>
+          stale.includes(t) ? { ...t, partial: false, text: t.text.trim() } : t
+        )
+        .filter((t) => t.text.length > 0);
+      commit(next);
+
+      for (const t of stale) {
+        const body = t.text.trim();
+        if (body) notifyOnce({ ...t, text: body, partial: false });
+      }
+    },
+    [commit, notifyOnce]
   );
 
   const handleEvent = useCallback(
@@ -133,6 +188,26 @@ export function useRealtimeVoice({ onTool, onTurnComplete }: Options = {}) {
         type === 'conversation.item.input_audio_transcription.completed'
       ) {
         finalize(`u-${e.item_id}`, 'user', e.transcript as string);
+      } else if (
+        type === 'conversation.item.input_audio_transcription.failed'
+      ) {
+        // Drop it rather than leave an empty bubble mid-conversation.
+        finalize(`u-${e.item_id}`, 'user', '');
+      }
+
+      // Barge-in: the model's current response is being cut off, so its
+      // transcript.done will never arrive. Close it out now.
+      else if (type === 'input_audio_buffer.speech_started') {
+        finalizeDangling('assistant');
+      }
+
+      // Response finished or was cancelled — nothing else is coming for it.
+      else if (
+        type === 'response.done' ||
+        type === 'response.cancelled' ||
+        type === 'response.incomplete'
+      ) {
+        finalizeDangling('assistant');
       }
 
       // --- what the model is saying, streamed in step with the audio ---
@@ -160,7 +235,7 @@ export function useRealtimeVoice({ onTool, onTurnComplete }: Options = {}) {
         }
       }
     },
-    [pushDelta, finalize]
+    [pushDelta, finalize, finalizeDangling]
   );
 
   const watchOutput = useCallback((stream: MediaStream) => {
@@ -198,7 +273,8 @@ export function useRealtimeVoice({ onTool, onTurnComplete }: Options = {}) {
     if (phase === 'connecting' || phase === 'live') return;
     setPhase('connecting');
     setError('');
-    setTurns([]);
+    commit([]);
+    notifiedRef.current.clear();
 
     try {
       const res = await fetch('/api/realtime/session', { method: 'POST' });
