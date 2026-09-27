@@ -82,8 +82,13 @@ export default function Home() {
     img.src = VISEME_SHEET;
   }, []);
 
+  // Two fixes for the hero being cut off on short screens:
+  //  - overflow-x only, so tall content can actually be scrolled to
+  //  - `safe center`, so flex centering degrades to flex-start instead of
+  //    pushing the top of the content above the viewport where it is
+  //    unreachable. Plain justify-center splits the overflow across both ends.
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 pb-10 md:pb-20">
+    <div className="justify-safe-center relative flex min-h-screen flex-col items-center overflow-x-hidden px-4 py-20 sm:py-10">
       {/* Big blurred background text */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center overflow-hidden">
         <div
@@ -124,7 +129,7 @@ export default function Home() {
 
       {/* Header */}
       <motion.div
-        className="z-1 mt-24 mb-8 flex flex-col items-center text-center md:mt-4 md:mb-12"
+        className="z-1 mb-4 flex flex-col items-center text-center"
         variants={topElementVariants}
         initial="hidden"
         animate="visible"
@@ -147,7 +152,11 @@ export default function Home() {
 
       {/* Center memoji — same sprite the chat avatar uses, held closed */}
       <div className="relative z-10 flex items-center justify-center">
-        <AvatarFace mode="idle" size={224} className="shadow-lg" />
+        <AvatarFace
+          mode="idle"
+          size={176}
+          className="shadow-lg sm:!h-[200px] sm:!w-[200px]"
+        />
       </div>
 
       {/* One click from landing to actually talking */}
@@ -166,9 +175,10 @@ export default function Home() {
         </button>
         <Link
           href="/talk"
-          className="text-muted-foreground hover:text-foreground text-xs underline underline-offset-4 transition"
+          aria-label="Open full-screen voice mode"
+          className="text-muted-foreground hover:text-foreground hover:border-foreground/30 rounded-full border px-3 py-2 text-xs font-medium transition"
         >
-          full screen
+          Full screen
         </Link>
       </motion.div>
 
@@ -211,18 +221,18 @@ export default function Home() {
         </form>
 
         {/* Scrolling rail of real questions — gives visitors a way in */}
-        <div className="mt-4 flex w-full justify-center">
+        <div className="mt-3 flex w-full justify-center">
           <SuggestionRail onPick={goToChat} />
         </div>
 
         {/* Quick-question grid */}
-        <div className="mt-6 grid w-full max-w-2xl grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
+        <div className="mt-5 grid w-full max-w-2xl grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
           {questionConfig.map(({ key, color, icon: Icon }) => (
             <Button
               key={key}
               onClick={() => goToChat(questions[key])}
               variant="outline"
-              className="border-border hover:bg-border/30 aspect-square w-full cursor-pointer rounded-2xl border-2 bg-white/40 dark:bg-neutral-800/40 py-8 shadow-md backdrop-blur-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95 md:p-10"
+              className="border-border hover:bg-border/30 aspect-square w-full cursor-pointer rounded-2xl border-2 bg-white/40 dark:bg-neutral-800/40 py-6 shadow-md backdrop-blur-lg transition-all hover:shadow-xl hover:scale-105 active:scale-95 md:p-8"
             >
               <div className="flex h-full flex-col items-center justify-center gap-2 text-gray-700 dark:text-gray-300">
                 <Icon size={24} strokeWidth={2.5} color={color} />
@@ -233,7 +243,7 @@ export default function Home() {
         </div>
 
         {/* Quick stats or badges */}
-        <div className="mt-8 flex flex-wrap justify-center gap-4 text-xs md:text-sm text-muted-foreground">
+        <div className="mt-6 flex flex-wrap justify-center gap-3 text-xs md:text-sm text-muted-foreground">
           <div className="flex items-center gap-2 bg-white/30 dark:bg-neutral-800/30 backdrop-blur-sm px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-700">
             <span className="font-semibold text-blue-600 dark:text-blue-400">100K+</span>
             <span>Requests/day served</span>

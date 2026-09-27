@@ -68,11 +68,18 @@ export const SuggestionRail = ({
 }) => {
   const track = [...SUGGESTED_QUESTIONS, ...SUGGESTED_QUESTIONS];
 
+  // A mask fades the pills out at both edges. Gradient overlays were wrong
+  // here — they hardcode a background colour, so they only looked right on a
+  // pure white or pure black page.
+  const edgeFade = {
+    maskImage:
+      'linear-gradient(to right, transparent, black 8%, black 92%, transparent)',
+    WebkitMaskImage:
+      'linear-gradient(to right, transparent, black 8%, black 92%, transparent)',
+  } as const;
+
   return (
-    <div className="relative w-full max-w-3xl overflow-hidden">
-      {/* edge fades so pills dissolve rather than clip */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-white to-transparent dark:from-black" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-white to-transparent dark:from-black" />
+    <div className="relative w-full max-w-3xl overflow-hidden" style={edgeFade}>
 
       <div className="group flex w-max gap-2 py-1 animate-[suggestion-scroll_44s_linear_infinite] hover:[animation-play-state:paused]">
         {track.map((q, i) => (

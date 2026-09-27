@@ -241,7 +241,20 @@ const Chat = () => {
     !currentAIMessage && !latestUserMessage && !loadingSubmit;
 
   // Calculate header height based on hasActiveTool
-  const headerHeight = hasActiveTool ? 100 : 180;
+  // Measured rather than hardcoded: the header grew when the voice bar was
+  // added and the old fixed 100/180 left content tucked underneath it.
+  const headerRef = useRef<HTMLDivElement>(null);
+  const [headerHeight, setHeaderHeight] = useState(180);
+
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) =>
+      setHeaderHeight(Math.ceil(entry.contentRect.height))
+    );
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   return (
     <div className="relative h-screen overflow-hidden">
@@ -271,6 +284,7 @@ const Chat = () => {
 
       {/* Fixed Avatar Header with Gradient */}
       <div
+        ref={headerRef}
         className="fixed top-0 right-0 left-0 z-50 bg-gradient-to-b from-white via-white/95 via-50% to-transparent dark:from-black dark:via-black/95 dark:via-50% dark:to-transparent"
       >
         <div

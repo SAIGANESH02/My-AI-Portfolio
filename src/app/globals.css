@@ -207,3 +207,12 @@ html.terminal-mode body::after {
     animation: none;
   }
 }
+
+/* Flex centering that degrades to flex-start when content overflows, instead
+   of splitting the overflow across both ends and pushing the top of the page
+   above the viewport where it cannot be scrolled to. Unsupported browsers
+   fall back to flex-start, which is still correct-ish. */
+.justify-safe-center {
+  justify-content: center;
+  justify-content: safe center;
+}
