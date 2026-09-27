@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/chat/chat-bubble';
 import ExtrasMenu from '@/components/fun/ExtrasMenu';
 import PerfMeter, { usePerfMeter } from '@/components/fun/PerfMeter';
+import VoiceMode from '@/components/fun/VoiceMode';
 import WelcomeModal from '@/components/welcome-modal';
 import { Home, Info } from 'lucide-react';
 import Link from 'next/link';
@@ -297,14 +298,18 @@ const Chat = () => {
     <div className="relative h-screen overflow-hidden">
       <PerfMeter stats={perf.stats} />
       {/* Home — always available so visitors aren't stranded in the chat */}
-      <Link
-        href="/"
-        aria-label="Back to home"
-        className="bg-background/70 hover:bg-accent absolute top-6 left-6 z-51 flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-medium shadow-sm backdrop-blur transition-all hover:scale-105"
-      >
-        <Home className="h-4 w-4" />
-        <span className="hidden sm:inline">Home</span>
-      </Link>
+      <div className="absolute top-6 left-6 z-51 flex items-center gap-2">
+        <Link
+          href="/"
+          aria-label="Back to home"
+          className="bg-background/70 hover:bg-accent flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-medium shadow-sm backdrop-blur transition-all hover:scale-105"
+        >
+          <Home className="h-4 w-4" />
+          <span className="hidden sm:inline">Home</span>
+        </Link>
+        {/* Voice drives the avatar directly, so it lip-syncs to real speech */}
+        <VoiceMode onSpeakingChange={setIsTalking} />
+      </div>
 
       <div className="absolute top-6 right-8 z-51 flex items-center justify-center gap-1">
         <ExtrasMenu />

@@ -8,7 +8,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Activity, Crosshair, Sparkles, SquareTerminal } from 'lucide-react';
+import {
+  Activity,
+  Crosshair,
+  Flame,
+  Mic,
+  Sparkles,
+  SquareTerminal,
+} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
 
@@ -36,6 +43,30 @@ const ExtrasMenu = ({ trigger }: { trigger?: ReactNode }) => {
   const close = () => setOpen(false);
 
   const rows: ExtraRow[] = [
+    {
+      icon: <Mic className="h-5 w-5 text-blue-500" />,
+      title: 'Talk to me out loud',
+      body: 'Real voice conversation — the avatar lip-syncs to it. Top-left of the chat. 90 seconds a call, because realtime audio is expensive.',
+      action: {
+        label: 'Go',
+        run: () => {
+          close();
+          router.push('/chat');
+        },
+      },
+    },
+    {
+      icon: <Flame className="h-5 w-5 text-orange-500" />,
+      title: 'Roast my resume',
+      body: "Drop your own PDF and I'll score it and tell you what a recruiter won't. Nothing gets stored.",
+      action: {
+        label: 'Open',
+        run: () => {
+          close();
+          router.push('/roast');
+        },
+      },
+    },
     {
       icon: <Crosshair className="h-5 w-5 text-red-500" />,
       title: 'Aim trainer',
