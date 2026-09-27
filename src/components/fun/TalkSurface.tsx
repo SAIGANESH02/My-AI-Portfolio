@@ -24,19 +24,13 @@ const TalkSurface = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-6 px-4 py-20">
-      <div className="relative">
-        <AvatarFace
-          mode={live ? 'voice' : 'idle'}
-          levelRef={voice.levelRef}
-          size={220}
-          className={`shadow-xl ring-4 transition-all duration-300 ${
-            live ? 'ring-red-400 dark:ring-red-500' : 'ring-black/5 dark:ring-white/10'
-          }`}
-        />
-        {live && (
-          <span className="absolute inset-0 animate-ping rounded-full ring-4 ring-red-400/30" />
-        )}
-      </div>
+      {/* AvatarFace draws its own amplitude ring while a call is live */}
+      <AvatarFace
+        mode={live ? 'voice' : 'idle'}
+        levelRef={voice.levelRef}
+        size={220}
+        className="shadow-xl"
+      />
 
       <VoiceBar
         phase={voice.phase}

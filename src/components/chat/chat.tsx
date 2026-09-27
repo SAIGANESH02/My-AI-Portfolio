@@ -294,21 +294,13 @@ const Chat = () => {
             <ClientOnly>
               {/* Mouth is driven by real output amplitude during a call, a
                   soft cadence while text streams, and held closed otherwise. */}
-              <div className="relative">
-                <AvatarFace
-                  mode={voiceLive ? 'voice' : isTalking ? 'text' : 'idle'}
-                  levelRef={voice.levelRef}
-                  size={hasActiveTool ? 80 : 112}
-                  className={`shadow-sm ring-2 transition-all duration-300 ${
-                    voiceLive
-                      ? 'ring-red-400 dark:ring-red-500'
-                      : 'ring-transparent'
-                  }`}
-                />
-                {voiceLive && (
-                  <span className="absolute inset-0 animate-ping rounded-full ring-2 ring-red-400/40" />
-                )}
-              </div>
+              {/* AvatarFace draws its own amplitude ring while a call is live */}
+              <AvatarFace
+                mode={voiceLive ? 'voice' : isTalking ? 'text' : 'idle'}
+                levelRef={voice.levelRef}
+                size={hasActiveTool ? 80 : 112}
+                className="shadow-sm"
+              />
 
               <VoiceBar
                 phase={voice.phase}

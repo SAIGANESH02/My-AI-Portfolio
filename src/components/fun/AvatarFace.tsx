@@ -69,6 +69,7 @@ const AvatarFace = ({
   onClick,
 }: Props) => {
   const ref = useRef<HTMLImageElement>(null);
+  const ringRef = useRef<HTMLSpanElement>(null);
   const modeRef = useRef(mode);
   const externalLevel = useRef(levelRef);
   modeRef.current = mode;
@@ -101,6 +102,15 @@ const AvatarFace = ({
         ref.current.src = VISEME_SRCS[frame];
         lastFrame = frame;
       }
+
+      // Continuous motion cue alongside the discrete mouth steps — the ring
+      // reads smoothly even when the mouth is only stepping a frame or two.
+      if (ringRef.current) {
+        const live = modeRef.current === 'voice';
+        ringRef.current.style.opacity = live ? String(0.2 + smoothed * 0.6) : '0';
+        ringRef.current.style.transform = `scale(${1 + smoothed * 0.16})`;
+      }
+
       raf = requestAnimationFrame(tick);
     };
 
@@ -109,20 +119,31 @@ const AvatarFace = ({
   }, []);
 
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      ref={ref}
-      src={VISEME_IDLE}
-      alt="Sai's avatar"
-      width={size}
-      height={size}
-      draggable={false}
-      onClick={onClick}
-      className={`shrink-0 rounded-full bg-white object-cover select-none ${
-        onClick ? 'cursor-pointer' : ''
-      } ${className}`}
+    <span
+      className="relative inline-flex shrink-0 items-center justify-center"
       style={{ width: size, height: size }}
-    />
+    >
+      <span
+        ref={ringRef}
+        aria-hidden
+        className="pointer-events-none absolute inset-0 rounded-full ring-4 ring-red-400/70 dark:ring-red-500/70"
+        style={{ opacity: 0, willChange: 'transform, opacity' }}
+      />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        ref={ref}
+        src={VISEME_IDLE}
+        alt="Sai's avatar"
+        width={size}
+        height={size}
+        draggable={false}
+        onClick={onClick}
+        className={`relative rounded-full bg-white object-cover select-none ${
+          onClick ? 'cursor-pointer' : ''
+        } ${className}`}
+        style={{ width: size, height: size }}
+      />
+    </span>
   );
 };
 
