@@ -1,4 +1,4 @@
-import { mistral } from '@ai-sdk/mistral';
+import { openai } from '@ai-sdk/openai';
 import { createDataStreamResponse, formatDataStreamPart, streamText } from 'ai';
 import { SYSTEM_PROMPT } from './prompt';
 import { getContact } from './tools/getContact';
@@ -12,6 +12,9 @@ import { getSports } from './tools/getSports';
 import { getWeather } from './tools/getWeather';
 
 export const maxDuration = 30;
+
+// Requires OPENAI_API_KEY in the environment.
+const CHAT_MODEL = 'gpt-4o-mini';
 
 // Simple in-memory cache for identical requests.
 // Note: this cache is per-server-instance (won't be shared across deployments/regions).
@@ -140,7 +143,7 @@ export async function POST(req: Request) {
 
     const cacheKey = getCacheKey({
       messages,
-      model: 'mistral-large-latest',
+      model: CHAT_MODEL,
       maxTokens,
       maxSteps: 2,
       activeTools,
@@ -175,7 +178,7 @@ export async function POST(req: Request) {
     };
 
     const result = streamText({
-      model: mistral('mistral-large-latest'),
+      model: openai(CHAT_MODEL),
       messages,
       toolCallStreaming: true,
       tools,

@@ -18,7 +18,7 @@
   <img src="https://img.shields.io/github/license/SAIGANESH02/ai-portfolio?style=for-the-badge" alt="License">
   <a href="https://nextjs.org/"><img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js"></a>
   <a href="https://vercel.com/"><img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Deployment"></a>
-  <a href="https://mistral.ai/"><img src="https://img.shields.io/badge/Mistral-AI-ff4f00?style=for-the-badge" alt="Mistral API"></a>
+  <a href="https://openai.com/"><img src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white" alt="OpenAI API"></a>
   <a href="https://github.com/SAIGANESH02/ai-portfolio/stargazers"><img src="https://img.shields.io/github/stars/SAIGANESH02/ai-portfolio?style=for-the-badge&color=ffd700" alt="Repo Stars"></a>
   <a href="https://github.com/SAIGANESH02/ai-portfolio/graphs/contributors"><img src="https://img.shields.io/github/contributors/SAIGANESH02/ai-portfolio?style=for-the-badge&color=ff69b4" alt="Contributors"></a>
 </p>
@@ -54,7 +54,7 @@ Whether you're a recruiter evaluating my experience, a technical lead assessing 
 | ----------------- | --------------------------------------------------------------------------------------------------------------------- |
 | **Frontend**      | [Next.js](https://nextjs.org/), [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/), [Tailwind CSS](https://tailwindcss.com/), [Framer Motion](https://www.framer.com/motion/) |
 | **Backend**       | [Node.js](https://nodejs.org/), Next.js API Routes, [Vercel AI SDK](https://sdk.vercel.ai/)                           |
-| **AI & APIs**     | [Mistral](https://mistral.ai/) (via [Vercel AI SDK](https://sdk.vercel.ai/))                                          |
+| **AI & APIs**     | [OpenAI](https://openai.com/) (via [Vercel AI SDK](https://sdk.vercel.ai/))                                           |
 | **Deployment**    | [Vercel](https://vercel.com/) (Edge Functions)                                                                        |
 | **Package Manager**| [pnpm](https://pnpm.io/)                                                                                              |
 | **UI Components** | [shadcn/ui](https://ui.shadcn.com/), Custom React Components                                                          |
@@ -82,7 +82,7 @@ Want to run this project locally or fork it for your own portfolio? Follow these
 #### **Prerequisites**
 -   Node.js (v18 or higher)
 -   pnpm package manager
--   Mistral API key (set as `MISTRAL_API_KEY`)
+-   OpenAI API key (set as `OPENAI_API_KEY`)
 
 #### **Local Setup**
 
@@ -100,7 +100,7 @@ Want to run this project locally or fork it for your own portfolio? Follow these
 3.  **Set up your environment variables:**
     Create a `.env.local` file in the root directory:
     ```env
-    MISTRAL_API_KEY="your_mistral_api_key_here"
+    OPENAI_API_KEY="your_openai_api_key_here"
     NODE_ENV=development
     ```
 
@@ -116,7 +116,7 @@ Want to run this project locally or fork it for your own portfolio? Follow these
 ### **Key Features Breakdown** 🔧
 
 #### **1. Intelligent Conversational AI**
-- Powered by Mistral (via Vercel AI SDK)
+- Powered by OpenAI (via Vercel AI SDK)
 - Context-aware responses based on user intent
 - Understands technical questions about ML systems, AWS infrastructure, and production deployments
 
