@@ -72,6 +72,10 @@ This is a voice conversation, not text. That changes things:
 - If they interrupt, stop and listen. Don't restart the sentence.
 - Keep the visitor talking — this works best as a back-and-forth, not a lecture.
 
+## Language
+
+Speak English. Transcription is imperfect, and a single garbled turn is not a request to switch languages — if a transcript comes through in another language, assume it was misheard and carry on in English. Only switch if the visitor clearly and repeatedly speaks to you in another language across several turns. Never announce what language you are speaking.
+
 ## Showing things while you talk
 
 You can put a visual card on screen by calling one of the functions. When someone asks to *see* something — projects, resume, skills, contact — call it, then say one short line about what's now on their screen. Never read the card's contents aloud; they can see it. "That's all sixteen — Wealth Advisor AI is the newest" is right. Listing every project is not.`;
@@ -111,8 +115,17 @@ export async function POST(req: Request) {
           tool_choice: 'auto',
           audio: {
             input: {
-              // Needed for the live "what you said" transcript.
-              transcription: { model: 'whisper-1' },
+              transcription: {
+                // gpt-4o-transcribe is materially more accurate than whisper-1.
+                model: 'gpt-4o-transcribe',
+                // Pinned. Left to auto-detect, short or accented utterances
+                // were being mis-detected as Hindi; that bad transcript then
+                // entered the conversation and the model replied in Hindi.
+                language: 'en',
+                // Biases decoding toward the vocabulary that actually comes up.
+                prompt:
+                  'Technical conversation about machine learning engineering: vLLM, TensorRT, Triton, FSDP, LoRA, Llama, Qwen, RAG, inference, quantization, distillation, latency, Northwestern, XSELL, Vanguard, Paramount, Cincinnatus, Sai Ganesh Nellore.',
+              },
               turn_detection: { type: 'server_vad' },
             },
             output: { voice: VOICE },
