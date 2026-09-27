@@ -1,14 +1,14 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import { Trophy, Gamepad2, Users, Target, Award, Zap } from 'lucide-react';
+import AimTrainer from '@/components/fun/AimTrainer';
 
 const Sports = () => {
   const esportsHighlights = [
     {
       title: 'Northwestern Esports Team',
-      description: 'Active member of Northwestern University\'s competitive esports program',
+      description: 'Competed with Northwestern University\'s esports program during my MS',
       icon: Users,
       color: 'text-purple-600 dark:text-purple-400',
       bgColor: 'bg-purple-50 dark:bg-purple-950/30',
@@ -52,7 +52,8 @@ const Sports = () => {
           </h2>
         </div>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-          Balancing technical excellence with competitive gaming at Northwestern University
+          Tournament Valorant at Northwestern — and a 30-second aim trainer below if you
+          think you can beat my score
         </p>
       </motion.div>
 
@@ -165,34 +166,14 @@ const Sports = () => {
         </div>
       </motion.div>
 
-      {/* Image Gallery Placeholder */}
+      {/* Playable aim trainer — replaces the old photo gallery */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.7 }}
-        className="space-y-4"
+        className="rounded-3xl border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6 md:p-8 dark:border-purple-800 dark:from-purple-950/20 dark:to-pink-950/20"
       >
-        <h3 className="text-xl font-bold text-center text-foreground">
-          Tournament Highlights
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Placeholder for gaming images */}
-          <div className="aspect-video bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl flex items-center justify-center border-2 border-dashed border-purple-300 dark:border-purple-700">
-            <div className="text-center space-y-2">
-              <Gamepad2 className="h-12 w-12 mx-auto text-purple-400" />
-              <p className="text-sm text-muted-foreground">Northwestern Esports Team Photo</p>
-            </div>
-          </div>
-          <div className="aspect-video bg-gradient-to-br from-red-100 to-orange-100 dark:from-red-900/20 dark:to-orange-900/20 rounded-xl flex items-center justify-center border-2 border-dashed border-red-300 dark:border-red-700">
-            <div className="text-center space-y-2">
-              <Trophy className="h-12 w-12 mx-auto text-yellow-500" />
-              <p className="text-sm text-muted-foreground">Valorant Tournament Victory</p>
-            </div>
-          </div>
-        </div>
-        <p className="text-xs text-center text-muted-foreground italic">
-          Add your tournament and team photos to /public/esports/ folder
-        </p>
+        <AimTrainer />
       </motion.div>
 
       {/* Quote */}

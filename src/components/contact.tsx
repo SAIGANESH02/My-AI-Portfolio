@@ -112,7 +112,7 @@ export function Contact() {
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-blue-600 dark:bg-blue-400"></span>
-              Lead ML Engineer / Senior AI Engineer roles
+              Senior / Staff ML Engineer roles
             </li>
             <li className="flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-blue-600 dark:bg-blue-400"></span>

@@ -8,7 +8,7 @@ export const getPresentation = tool({
   execute: async () => {
     return {
       presentation:
-        "Here's my story - check out the details above! I'm SaiGanesh, a Lead ML Engineer who's passionate about building production-scale AI systems. From voice AI serving thousands daily to saving $300K through RAG optimization, I love tackling real-world challenges with cutting-edge tech. Let me know what interests you most!",
+        "The short version: ML engineer, nearly five years in, mostly production LLM systems and making inference fast and cheap. Currently contracting with Google on training infrastructure and GPU kernel work.",
     };
   },
 });

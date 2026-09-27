@@ -31,7 +31,7 @@ const FullTimeCard = () => {
               Sai Ganesh Nellore
             </h2>
             <p className="text-muted-foreground text-sm font-medium">
-              Lead ML Engineer | 4+ Years Experience
+              Senior ML Engineer | ~5 Years Experience
             </p>
           </div>
         </div>
@@ -43,7 +43,7 @@ const FullTimeCard = () => {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500"></span>
             </span>
-            Open to Full-Time
+            On contract · open
           </span>
         </div>
       </div>
@@ -55,7 +55,7 @@ const FullTimeCard = () => {
           <div>
             <p className="text-foreground text-sm font-semibold">Experience</p>
             <p className="text-muted-foreground text-sm">
-              4+ Years in AI/ML Engineering & Production Systems
+              ~5 Years in production ML, inference & GPU infrastructure
             </p>
           </div>
         </div>
@@ -74,7 +74,7 @@ const FullTimeCard = () => {
           <div>
             <p className="text-foreground text-sm font-semibold">Role Focus</p>
             <p className="text-muted-foreground text-sm">
-              Lead ML Engineer / Senior AI Engineer
+              Senior / Staff ML Engineer · Inference & Training Infra
             </p>
           </div>
         </div>
@@ -153,7 +153,7 @@ const FullTimeCard = () => {
           Career Goals
         </p>
         <p className="text-foreground text-sm leading-relaxed">
-          Seeking <strong>Lead ML Engineer or Senior AI Engineer</strong> roles where I can drive innovation in 
+          Seeking <strong>Senior or Staff ML Engineer</strong> roles where I can drive innovation in 
           production AI systems. Passionate about building scalable GenAI solutions, optimizing LLM performance, 
           and leading teams to ship impactful AI products. Ready to tackle complex challenges in voice AI, 
           RAG systems, and cloud-native ML infrastructure 🚀

@@ -1,6 +1,12 @@
 'use client';
 
+import {
+  RotatingPlaceholder,
+  SuggestionRail,
+  useRotatingPlaceholder,
+} from '@/components/AskSuggestions';
 import FluidCursor from '@/components/FluidCursor';
+import ExtrasMenu from '@/components/fun/ExtrasMenu';
 import { Button } from '@/components/ui/button';
 import WelcomeModal from '@/components/welcome-modal';
 import { motion } from 'framer-motion';
@@ -11,6 +17,7 @@ import {
   Laugh,
   Layers,
   PartyPopper,
+  Sparkles,
   UserRoundSearch,
 } from 'lucide-react';
 import Image from 'next/image';
@@ -42,6 +49,7 @@ export default function Home() {
   const [input, setInput] = useState('');
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
+  const rotatingQuestion = useRotatingPlaceholder(!input);
 
   const goToChat = (query: string) =>
     router.push(`/chat?query=${encodeURIComponent(query)}`);
@@ -95,8 +103,16 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Theme toggle */}
+      {/* Theme toggle + extras */}
       <div className="absolute top-6 right-8 z-20 flex items-center gap-2">
+        <ExtrasMenu
+          trigger={
+            <button className="flex cursor-pointer items-center gap-1.5 rounded-full border bg-white/40 px-3 py-2 text-xs font-medium backdrop-blur-lg transition-all hover:scale-105 hover:shadow-md dark:bg-neutral-800/40">
+              <Sparkles className="h-3.5 w-3.5 text-blue-500" />
+              <span className="hidden sm:inline">Extras</span>
+            </button>
+          }
+        />
         <ThemeToggle />
       </div>
 
@@ -111,7 +127,7 @@ export default function Home() {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
             <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500"></span>
           </span>
-          Open to Full-Time Roles
+          On contract · open to full-time
         </button>
       </div>
 
@@ -133,7 +149,8 @@ export default function Home() {
           AI-Powered Portfolio
         </h1>
         <p className="text-muted-foreground mt-3 text-sm md:text-base max-w-xl">
-          Lead ML Engineer • Forward Deployed Engineer • MLOps • AI Systems • LLM Optimization • Voice AI
+          Senior ML Engineer • Production LLM Systems • Inference Optimization • GPU
+          & Training Infrastructure • Voice AI
         </p>
       </motion.div>
 
@@ -165,14 +182,17 @@ export default function Home() {
           className="relative w-full max-w-lg"
         >
           <div className="mx-auto flex items-center rounded-full border-2 border-blue-200 dark:border-blue-800 bg-white/40 dark:bg-neutral-800/40 py-3 pr-2 pl-6 backdrop-blur-lg transition-all hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-lg">
-            <input
-              ref={inputRef}
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask me anything about my work, skills, or projects…"
-              className="w-full border-none bg-transparent text-base text-neutral-800 placeholder:text-neutral-500 focus:outline-none dark:text-neutral-200 dark:placeholder:text-neutral-400"
-            />
+            <div className="relative w-full">
+              {!input && <RotatingPlaceholder text={rotatingQuestion} />}
+              <input
+                ref={inputRef}
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                aria-label="Ask me anything"
+                className="w-full border-none bg-transparent text-base text-neutral-800 focus:outline-none dark:text-neutral-200"
+              />
+            </div>
             <button
               type="submit"
               disabled={!input.trim()}
@@ -183,6 +203,11 @@ export default function Home() {
             </button>
           </div>
         </form>
+
+        {/* Scrolling rail of real questions — gives visitors a way in */}
+        <div className="mt-4 flex w-full justify-center">
+          <SuggestionRail onPick={goToChat} />
+        </div>
 
         {/* Quick-question grid */}
         <div className="mt-6 grid w-full max-w-2xl grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
@@ -204,12 +229,12 @@ export default function Home() {
         {/* Quick stats or badges */}
         <div className="mt-8 flex flex-wrap justify-center gap-4 text-xs md:text-sm text-muted-foreground">
           <div className="flex items-center gap-2 bg-white/30 dark:bg-neutral-800/30 backdrop-blur-sm px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-700">
-            <span className="font-semibold text-blue-600 dark:text-blue-400">4+ Years</span>
-            <span>Experience</span>
+            <span className="font-semibold text-blue-600 dark:text-blue-400">100K+</span>
+            <span>Requests/day served</span>
           </div>
           <div className="flex items-center gap-2 bg-white/30 dark:bg-neutral-800/30 backdrop-blur-sm px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-700">
-            <span className="font-semibold text-green-600 dark:text-green-400">15+</span>
-            <span>AI/ML Projects</span>
+            <span className="font-semibold text-green-600 dark:text-green-400">85%</span>
+            <span>Inference cost cut</span>
           </div>
           <div className="flex items-center gap-2 bg-white/30 dark:bg-neutral-800/30 backdrop-blur-sm px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-700">
             <span className="font-semibold text-purple-600 dark:text-purple-400">MS in AI</span>

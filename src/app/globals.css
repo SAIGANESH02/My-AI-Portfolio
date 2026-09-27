@@ -154,3 +154,56 @@ pre {
   word-wrap: normal;
   overflow-x: auto;
 }
+/* ── Easter egg: Konami code toggles a green CRT terminal look ── */
+/* Light theme: invert first so the page reads black-on-green, not neon wash. */
+html.terminal-mode:not(.dark) body {
+  filter: invert(1) grayscale(1) sepia(1) hue-rotate(65deg) saturate(4)
+    contrast(1.1) brightness(1.1);
+}
+
+/* Dark theme is already dark — just tint it. */
+html.terminal-mode.dark body {
+  filter: grayscale(1) sepia(1) hue-rotate(65deg) saturate(4) contrast(1.15);
+}
+
+/* Scanlines + a soft phosphor glow, painted over everything */
+html.terminal-mode body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.22) 0px,
+      rgba(0, 0, 0, 0.22) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.45) 100%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.terminal-mode body::after {
+    animation: crt-flicker 3s infinite steps(1);
+  }
+}
+
+@keyframes crt-flicker {
+  0%, 97%, 100% { opacity: 1; }
+  98% { opacity: 0.82; }
+}
+
+/* Scrolling suggestion rail on the landing page. Track is duplicated, so
+   translating by exactly -50% loops seamlessly. */
+@keyframes suggestion-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-\[suggestion-scroll_44s_linear_infinite\] {
+    animation: none;
+  }
+}

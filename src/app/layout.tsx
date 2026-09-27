@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import EasterEggs from "@/components/fun/EasterEggs";
 import Script from "next/script";
 import "./globals.css";
 
@@ -14,8 +15,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Sai Ganesh Nellore | Lead ML Engineer",
-  description: "Interactive AI-powered portfolio showcasing production-scale ML systems, LLM optimization, voice AI, and RAG solutions. Lead ML Engineer with 4+ years of experience in AI/ML deployment.",
+  title: "Sai Ganesh Nellore | Senior ML Engineer",
+  description: "Interactive AI-powered portfolio showcasing production LLM systems, high-performance inference, GPU training infrastructure, and voice AI. Senior ML Engineer with ~5 years of experience shipping AI to real traffic.",
   keywords: [
     "Sai Ganesh Nellore",
     "Machine Learning Engineer",
@@ -48,13 +49,13 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://saiganesh02.github.io/SaiGanesh02/",
-    title: "Sai Ganesh Nellore | Lead ML Engineer Portfolio",
+    title: "Sai Ganesh Nellore | Senior ML Engineer Portfolio",
     description: "Interactive AI-powered portfolio featuring production-scale ML systems, LLM optimization, and voice AI solutions",
     siteName: "Sai Ganesh Nellore Portfolio",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sai Ganesh Nellore | Lead ML Engineer",
+    title: "Sai Ganesh Nellore | Senior ML Engineer",
     description: "Interactive AI-powered portfolio showcasing production ML systems and LLM optimization",
     creator: "@saigane75831398",
   },
@@ -128,8 +129,8 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Person",
               "name": "Sai Ganesh Nellore",
-              "jobTitle": "Lead Machine Learning Engineer",
-              "description": "Lead ML Engineer specializing in AI systems, LLM optimization, and voice AI",
+              "jobTitle": "Senior Machine Learning Engineer",
+              "description": "Senior ML Engineer specializing in production LLM systems, inference optimization, GPU training infrastructure, and voice AI",
               "url": "https://saiganesh02.github.io/SaiGanesh02/",
               "sameAs": [
                 "https://linkedin.com/in/saiganeshn",
@@ -172,6 +173,7 @@ export default function RootLayout({
             {children}
           </main>
           <Toaster />
+          <EasterEggs />
         </ThemeProvider>
         <Analytics />
       </body>

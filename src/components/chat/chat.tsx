@@ -15,8 +15,11 @@ import {
   ChatBubble,
   ChatBubbleMessage,
 } from '@/components/ui/chat/chat-bubble';
+import ExtrasMenu from '@/components/fun/ExtrasMenu';
+import PerfMeter, { usePerfMeter } from '@/components/fun/PerfMeter';
 import WelcomeModal from '@/components/welcome-modal';
-import { Info } from 'lucide-react';
+import { Home, Info } from 'lucide-react';
+import Link from 'next/link';
 import HelperBoost from './HelperBoost';
 
 // ClientOnly component for client-side rendering
@@ -123,6 +126,7 @@ const Chat = () => {
   const [autoSubmitted, setAutoSubmitted] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isTalking, setIsTalking] = useState(false);
+  const perf = usePerfMeter();
 
   const {
     messages,
@@ -139,28 +143,19 @@ const Chat = () => {
   } = useChat({
     onResponse: (response) => {
       if (response) {
+        perf.onResponseHeaders(response);
         setLoadingSubmit(false);
         setIsTalking(true);
-        if (videoRef.current) {
-          videoRef.current.play().catch((error) => {
-            console.error('Failed to play video:', error);
-          });
-        }
       }
     },
-    onFinish: () => {
+    onFinish: (_message, { usage }) => {
+      perf.onDone(usage);
       setLoadingSubmit(false);
       setIsTalking(false);
-      if (videoRef.current) {
-        videoRef.current.pause();
-      }
     },
     onError: (error) => {
       setLoadingSubmit(false);
       setIsTalking(false);
-      if (videoRef.current) {
-        videoRef.current.pause();
-      }
       console.error('Chat error:', error.message, error.cause);
       toast.error(`Error: ${error.message}`);
     },
@@ -215,6 +210,7 @@ const Chat = () => {
   //@ts-ignore
   const submitQuery = (query) => {
     if (!query.trim() || isToolInProgress) return;
+    perf.onSend();
     setLoadingSubmit(true);
     append({
       role: 'user',
@@ -227,7 +223,7 @@ const Chat = () => {
       videoRef.current.loop = true;
       videoRef.current.muted = true;
       videoRef.current.playsInline = true;
-      videoRef.current.pause();
+      // Playback itself is driven by the isTalking effect below.
     }
 
     if (initialQuery && !autoSubmitted) {
@@ -237,16 +233,43 @@ const Chat = () => {
     }
   }, [initialQuery, autoSubmitted]);
 
+  // Stamp time-to-first-token the moment the assistant's text starts arriving.
+  const markFirstToken = perf.onFirstToken;
   useEffect(() => {
-    if (videoRef.current) {
-      if (isTalking) {
-        videoRef.current.play().catch((error) => {
-          console.error('Failed to play video:', error);
-        });
-      } else {
-        videoRef.current.pause();
-      }
+    if (currentAIMessage?.content) {
+      markFirstToken();
     }
+  }, [currentAIMessage?.content, markFirstToken]);
+
+  // Sole owner of video playback.
+  //
+  // HTMLMediaElement.play() returns a promise that only settles once playback
+  // actually starts. Calling pause() before it settles rejects it with
+  // AbortError ("The play() request was interrupted by a call to pause()").
+  // Short turns — cached responses especially — hit that window easily, so we
+  // wait for any in-flight play() to settle before pausing, and re-check that
+  // we still want to be paused by the time it does.
+  const isTalkingRef = useRef(isTalking);
+  isTalkingRef.current = isTalking;
+  const playPromiseRef = useRef<Promise<void> | null>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isTalking) {
+      playPromiseRef.current = video.play() ?? null;
+      // Autoplay policy can still reject this; nothing to recover from.
+      playPromiseRef.current?.catch(() => {});
+      return;
+    }
+
+    Promise.resolve(playPromiseRef.current)
+      .catch(() => {})
+      .then(() => {
+        if (isTalkingRef.current) return; // a new turn started while we waited
+        videoRef.current?.pause();
+      });
   }, [isTalking]);
 
   //@ts-ignore
@@ -260,10 +283,7 @@ const Chat = () => {
   const handleStop = () => {
     stop();
     setLoadingSubmit(false);
-    setIsTalking(false);
-    if (videoRef.current) {
-      videoRef.current.pause();
-    }
+    setIsTalking(false); // the isTalking effect pauses the video safely
   };
 
   // Check if this is the initial empty state (no messages)
@@ -275,11 +295,23 @@ const Chat = () => {
 
   return (
     <div className="relative h-screen overflow-hidden">
-      <div className="absolute top-6 right-8 z-51 flex flex-col-reverse items-center justify-center gap-1 md:flex-row">
+      <PerfMeter stats={perf.stats} />
+      {/* Home — always available so visitors aren't stranded in the chat */}
+      <Link
+        href="/"
+        aria-label="Back to home"
+        className="bg-background/70 hover:bg-accent absolute top-6 left-6 z-51 flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-medium shadow-sm backdrop-blur transition-all hover:scale-105"
+      >
+        <Home className="h-4 w-4" />
+        <span className="hidden sm:inline">Home</span>
+      </Link>
+
+      <div className="absolute top-6 right-8 z-51 flex items-center justify-center gap-1">
+        <ExtrasMenu />
         <WelcomeModal
           trigger={
             <div className="hover:bg-accent cursor-pointer rounded-2xl px-3 py-1.5">
-              <Info className="text-accent-foreground h-8" />
+              <Info className="text-accent-foreground h-5 w-5" />
             </div>
           }
         />

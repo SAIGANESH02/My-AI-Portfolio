@@ -10,11 +10,12 @@ export function Resume() {
 
   const resumeDetails = {
     title: "Sai Ganesh Nellore's Resume",
-    description: 'Lead ML Engineer | AI/ML Systems | Voice AI & LLM Optimization',
+    description:
+      'Senior ML Engineer | Production LLM Systems | Inference & GPU Infrastructure',
     fileType: 'PDF',
-    lastUpdated: 'February 2025',
-    fileSize: '145 KB',
-    downloadUrl: '/SaiGanesh_Nellore_Resume_Feb.pdf',
+    lastUpdated: 'August 2026',
+    fileSize: '11 KB',
+    downloadUrl: '/SaiGanesh_Nellore_Resume.pdf',
     fileName: 'SaiGanesh-Nellore-Resume.pdf',
   };
 

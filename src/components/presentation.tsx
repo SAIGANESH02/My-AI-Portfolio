@@ -8,10 +8,10 @@ export function Presentation() {
   // Personal information
   const profile = {
     name: 'Sai Ganesh Nellore',
-    age: '4+ Years Experience',
+    age: '~5 Years Experience',
     location: 'Chicago, IL, USA',
     description:
-      "Hey 👋\nI'm Sai Ganesh, a Lead Machine Learning Engineer specializing in AI systems, LLM optimization, and agentic voice automation. Building production-scale GenAI solutions with a focus on sub-second latency, HIPAA compliance, and cost-efficient cloud architectures.",
+      "Hey 👋\nI'm Sai Ganesh, a Senior Machine Learning Engineer working on production LLM systems — inference optimization, distributed GPU training, and agentic voice. Currently contracting with Google on frontier-model performance for ML-systems problems. Before that I ran the inference stack for a healthcare voice agent at 100K+ requests/day, and cut its serving cost by 85%.",
     src: '/saiganesh.jpeg', // Make sure this file exists in your /public folder
   };
 
