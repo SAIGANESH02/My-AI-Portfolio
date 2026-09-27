@@ -15,9 +15,11 @@ import {
   ChatBubble,
   ChatBubbleMessage,
 } from '@/components/ui/chat/chat-bubble';
+import AvatarFace from '@/components/fun/AvatarFace';
 import ExtrasMenu from '@/components/fun/ExtrasMenu';
 import PerfMeter, { usePerfMeter } from '@/components/fun/PerfMeter';
-import VoiceMode from '@/components/fun/VoiceMode';
+import VoiceBar from '@/components/fun/VoiceBar';
+import { useRealtimeVoice } from '@/components/fun/useRealtimeVoice';
 import WelcomeModal from '@/components/welcome-modal';
 import { Home, Info } from 'lucide-react';
 import Link from 'next/link';
@@ -39,77 +41,6 @@ const ClientOnly = ({ children }) => {
   return <>{children}</>;
 };
 
-// Define Avatar component props interface
-interface AvatarProps {
-  hasActiveTool: boolean;
-  videoRef: React.RefObject<HTMLVideoElement | null>;
-  isTalking: boolean;
-}
-
-// Dynamic import of Avatar component
-const Avatar = dynamic<AvatarProps>(
-  () =>
-    Promise.resolve(({ hasActiveTool, videoRef, isTalking }: AvatarProps) => {
-      // This function will only execute on the client
-      const isIOS = () => {
-        // Multiple detection methods
-        const userAgent = window.navigator.userAgent;
-        const platform = window.navigator.platform;
-        const maxTouchPoints = window.navigator.maxTouchPoints || 0;
-
-        // UserAgent-based check
-        const isIOSByUA =
-          //@ts-ignore
-          /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-
-        // Platform-based check
-        const isIOSByPlatform = /iPad|iPhone|iPod/.test(platform);
-
-        // iPad Pro check
-        const isIPadOS =
-          //@ts-ignore
-          platform === 'MacIntel' && maxTouchPoints > 1 && !window.MSStream;
-
-        // Safari check
-        const isSafari = /Safari/.test(userAgent) && !/Chrome/.test(userAgent);
-
-        return isIOSByUA || isIOSByPlatform || isIPadOS || isSafari;
-      };
-
-      // Conditional rendering based on detection
-      return (
-        <div
-          className={`flex items-center justify-center rounded-full transition-all duration-300 ${hasActiveTool ? 'h-20 w-20' : 'h-28 w-28'}`}
-        >
-          <div
-            className="relative cursor-pointer"
-            onClick={() => (window.location.href = '/')}
-          >
-            {isIOS() ? (
-              <img
-                src="/landing-memojis.png"
-                alt="iOS avatar"
-                className="h-full w-full scale-[1.8] object-contain"
-              />
-            ) : (
-              <video
-                ref={videoRef}
-                className="h-full w-full scale-[1.8] object-contain"
-                muted
-                playsInline
-                loop
-              >
-                <source src="/final_memojis.webm" type="video/webm" />
-                <source src="/final_memojis_ios.mp4" type="video/mp4" />
-              </video>
-            )}
-          </div>
-        </div>
-      );
-    }),
-  { ssr: false }
-);
-
 const MOTION_CONFIG = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
@@ -121,9 +52,9 @@ const MOTION_CONFIG = {
 };
 
 const Chat = () => {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get('query');
+  const autoVoice = searchParams.get('voice') === '1';
   const [autoSubmitted, setAutoSubmitted] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isTalking, setIsTalking] = useState(false);
@@ -165,6 +96,62 @@ const Chat = () => {
       console.log('Tool call:', toolName);
     },
   });
+
+  // --- Voice ---------------------------------------------------------------
+  // Spoken turns land in the same message list as typed ones, so the history
+  // is continuous no matter how the visitor chose to talk.
+  const setMessagesRef = useRef(setMessages);
+  setMessagesRef.current = setMessages;
+
+  const voice = useRealtimeVoice({
+    onTurnComplete: (turn) => {
+      setMessagesRef.current((prev) => [
+        ...prev,
+        {
+          id: turn.id,
+          role: turn.role,
+          content: turn.text,
+          // Marks it as spoken so the transcript can be styled differently.
+          annotations: [{ via: 'voice' }],
+        } as never,
+      ]);
+    },
+    onTool: (toolName) => {
+      // Render the same card the text chat would, from the voice call.
+      setMessagesRef.current((prev) => [
+        ...prev,
+        {
+          id: `voice-tool-${toolName}-${Date.now()}`,
+          role: 'assistant',
+          content: '',
+          parts: [
+            {
+              type: 'tool-invocation',
+              toolInvocation: {
+                state: 'result',
+                toolCallId: `voice-${toolName}-${Date.now()}`,
+                toolName,
+                args: {},
+                result: '',
+              },
+            },
+          ],
+        } as never,
+      ]);
+    },
+  });
+
+  const voiceLive = voice.phase === 'live';
+
+  // One-click "talk to me" from the home page.
+  const voiceStart = voice.start;
+  const [voiceAutoStarted, setVoiceAutoStarted] = useState(false);
+  useEffect(() => {
+    if (autoVoice && !voiceAutoStarted) {
+      setVoiceAutoStarted(true);
+      voiceStart();
+    }
+  }, [autoVoice, voiceAutoStarted, voiceStart]);
 
   const { currentAIMessage, latestUserMessage, hasActiveTool } = useMemo(() => {
     const latestAIMessageIndex = messages.findLastIndex(
@@ -220,13 +207,6 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.loop = true;
-      videoRef.current.muted = true;
-      videoRef.current.playsInline = true;
-      // Playback itself is driven by the isTalking effect below.
-    }
-
     if (initialQuery && !autoSubmitted) {
       setAutoSubmitted(true);
       setInput('');
@@ -241,37 +221,6 @@ const Chat = () => {
       markFirstToken();
     }
   }, [currentAIMessage?.content, markFirstToken]);
-
-  // Sole owner of video playback.
-  //
-  // HTMLMediaElement.play() returns a promise that only settles once playback
-  // actually starts. Calling pause() before it settles rejects it with
-  // AbortError ("The play() request was interrupted by a call to pause()").
-  // Short turns — cached responses especially — hit that window easily, so we
-  // wait for any in-flight play() to settle before pausing, and re-check that
-  // we still want to be paused by the time it does.
-  const isTalkingRef = useRef(isTalking);
-  isTalkingRef.current = isTalking;
-  const playPromiseRef = useRef<Promise<void> | null>(null);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    if (isTalking) {
-      playPromiseRef.current = video.play() ?? null;
-      // Autoplay policy can still reject this; nothing to recover from.
-      playPromiseRef.current?.catch(() => {});
-      return;
-    }
-
-    Promise.resolve(playPromiseRef.current)
-      .catch(() => {})
-      .then(() => {
-        if (isTalkingRef.current) return; // a new turn started while we waited
-        videoRef.current?.pause();
-      });
-  }, [isTalking]);
 
   //@ts-ignore
   const onSubmit = (e) => {
@@ -307,8 +256,6 @@ const Chat = () => {
           <Home className="h-4 w-4" />
           <span className="hidden sm:inline">Home</span>
         </Link>
-        {/* Voice drives the avatar directly, so it lip-syncs to real speech */}
-        <VoiceMode onSpeakingChange={setIsTalking} />
       </div>
 
       <div className="absolute top-6 right-8 z-51 flex items-center justify-center gap-1">
@@ -329,12 +276,34 @@ const Chat = () => {
         <div
           className={`transition-all duration-300 ease-in-out ${hasActiveTool ? 'pt-6 pb-0' : 'py-6'}`}
         >
-          <div className="flex justify-center">
+          <div className="flex flex-col items-center gap-3">
             <ClientOnly>
-              <Avatar
-                hasActiveTool={hasActiveTool}
-                videoRef={videoRef}
-                isTalking={isTalking}
+              {/* Mouth is driven by real output amplitude during a call, a
+                  soft cadence while text streams, and held closed otherwise. */}
+              <div className="relative">
+                <AvatarFace
+                  mode={voiceLive ? 'voice' : isTalking ? 'text' : 'idle'}
+                  level={0}
+                  levelRef={voice.levelRef}
+                  size={hasActiveTool ? 80 : 112}
+                  className={`shadow-sm ring-2 transition-all duration-300 ${
+                    voiceLive
+                      ? 'ring-red-400 dark:ring-red-500'
+                      : 'ring-transparent'
+                  }`}
+                />
+                {voiceLive && (
+                  <span className="absolute inset-0 animate-ping rounded-full ring-2 ring-red-400/40" />
+                )}
+              </div>
+
+              <VoiceBar
+                phase={voice.phase}
+                error={voice.error}
+                secondsLeft={voice.secondsLeft}
+                turns={voice.turns}
+                onStart={voice.start}
+                onStop={voice.hangUp}
               />
             </ClientOnly>
           </div>

@@ -6,7 +6,9 @@ import {
   useRotatingPlaceholder,
 } from '@/components/AskSuggestions';
 import FluidCursor from '@/components/FluidCursor';
+import AvatarFace from '@/components/fun/AvatarFace';
 import ExtrasMenu from '@/components/fun/ExtrasMenu';
+import { VISEME_SHEET } from '@/components/fun/visemes';
 import { Button } from '@/components/ui/button';
 import WelcomeModal from '@/components/welcome-modal';
 import { motion } from 'framer-motion';
@@ -16,11 +18,12 @@ import {
   FileText,
   Laugh,
   Layers,
+  Mic,
   PartyPopper,
   Sparkles,
   UserRoundSearch,
 } from 'lucide-react';
-import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
@@ -73,22 +76,10 @@ export default function Home() {
   };
 
   useEffect(() => {
-    // Preload assets in background
+    // Warm the one asset the avatar actually needs. This used to prefetch two
+    // 3.1MB videos that no longer exist — the sprite sheet replaced them.
     const img = new window.Image();
-    img.src = '/landing-memojis.png';
-
-    // Preload videos
-    const linkWebm = document.createElement('link');
-    linkWebm.rel = 'prefetch';
-    linkWebm.as = 'video';
-    linkWebm.href = '/final_memojis.webm';
-    document.head.appendChild(linkWebm);
-
-    const linkMp4 = document.createElement('link');
-    linkMp4.rel = 'prefetch';
-    linkMp4.as = 'video';
-    linkMp4.href = '/final_memojis_ios.mp4';
-    document.head.appendChild(linkMp4);
+    img.src = VISEME_SHEET;
   }, []);
 
   return (
@@ -154,17 +145,32 @@ export default function Home() {
         </p>
       </motion.div>
 
-      {/* Center memoji */}
-      <div className="relative z-10 h-52 w-48 overflow-hidden sm:h-72 sm:w-72">
-        <Image
-          src="/landing-memojis.png"
-          alt="Hero memoji"
-          width={2000}
-          height={2000}
-          priority
-          className="translate-y-1 scale-[1.2] object-cover"
-        />
+      {/* Center memoji — same sprite the chat avatar uses, held closed */}
+      <div className="relative z-10 flex items-center justify-center">
+        <AvatarFace mode="idle" size={224} className="shadow-lg" />
       </div>
+
+      {/* One click from landing to actually talking */}
+      <motion.div
+        variants={bottomElementVariants}
+        initial="hidden"
+        animate="visible"
+        className="z-10 mt-4 flex items-center gap-2"
+      >
+        <button
+          onClick={() => router.push('/chat?voice=1')}
+          className="flex cursor-pointer items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl"
+        >
+          <Mic className="h-4 w-4" />
+          Talk to me out loud
+        </button>
+        <Link
+          href="/talk"
+          className="text-muted-foreground hover:text-foreground text-xs underline underline-offset-4 transition"
+        >
+          full screen
+        </Link>
+      </motion.div>
 
       {/* Input + quick buttons */}
       <motion.div

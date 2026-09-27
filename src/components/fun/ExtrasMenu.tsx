@@ -46,12 +46,12 @@ const ExtrasMenu = ({ trigger }: { trigger?: ReactNode }) => {
     {
       icon: <Mic className="h-5 w-5 text-blue-500" />,
       title: 'Talk to me out loud',
-      body: 'Real voice conversation — the avatar lip-syncs to it. Top-left of the chat. 90 seconds a call, because realtime audio is expensive.',
+      body: "Real voice conversation with live captions, and the mouth tracks actual speech. 90 seconds a call — realtime audio isn't cheap.",
       action: {
-        label: 'Go',
+        label: 'Talk',
         run: () => {
           close();
-          router.push('/chat');
+          router.push('/talk');
         },
       },
     },

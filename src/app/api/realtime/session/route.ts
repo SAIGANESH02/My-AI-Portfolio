@@ -39,6 +39,27 @@ const bad = (message: string, status: number) =>
 
 // Spoken answers need to be shorter than written ones, and must never read
 // markdown aloud. Everything else about the persona carries over.
+/**
+ * The same nine sections the text chat can render, exposed to the voice model
+ * as functions. The browser renders the matching card when one fires — the
+ * spoken answer and the visual card arrive together.
+ */
+const VOICE_TOOLS = [
+  ['getProjects', 'Show the full list of AI/ML projects. Use for projects, portfolio, what you have built.'],
+  ['getResume', 'Show the downloadable resume card. Use for resume, CV, work history.'],
+  ['getSkills', 'Show the skills and tech stack card.'],
+  ['getContact', 'Show contact details. Use for email, reaching out, getting in touch.'],
+  ['getPresentation', 'Show the personal introduction card. Use for "who are you", "tell me about yourself".'],
+  ['getSports', 'Show the esports/gaming card, which also contains the aim trainer. Use for hobbies, gaming, fun.'],
+  ['getFullTime', 'Show the availability card. Use for hiring, job search, opportunities.'],
+  ['getCrazy', 'Show the craziest-thing-done card.'],
+].map(([name, description]) => ({
+  type: 'function' as const,
+  name,
+  description,
+  parameters: { type: 'object', properties: {}, required: [] },
+}));
+
 const VOICE_ADDENDUM = `
 
 ## You are speaking out loud
@@ -49,7 +70,11 @@ This is a voice conversation, not text. That changes things:
 - Numbers stay, they're the whole point. "Three hundred dollars a day down to forty."
 - Contractions and normal speech rhythm. Read your answer back in your head; if it sounds like a document, rewrite it.
 - If they interrupt, stop and listen. Don't restart the sentence.
-- Keep the visitor talking — this works best as a back-and-forth, not a lecture.`;
+- Keep the visitor talking — this works best as a back-and-forth, not a lecture.
+
+## Showing things while you talk
+
+You can put a visual card on screen by calling one of the functions. When someone asks to *see* something — projects, resume, skills, contact — call it, then say one short line about what's now on their screen. Never read the card's contents aloud; they can see it. "That's all sixteen — Wealth Advisor AI is the newest" is right. Listing every project is not.`;
 
 export async function POST(req: Request) {
   try {
@@ -82,8 +107,14 @@ export async function POST(req: Request) {
           model: REALTIME_MODEL,
           instructions,
           output_modalities: ['audio'],
+          tools: VOICE_TOOLS,
+          tool_choice: 'auto',
           audio: {
-            input: { turn_detection: { type: 'server_vad' } },
+            input: {
+              // Needed for the live "what you said" transcript.
+              transcription: { model: 'whisper-1' },
+              turn_detection: { type: 'server_vad' },
+            },
             output: { voice: VOICE },
           },
         },
