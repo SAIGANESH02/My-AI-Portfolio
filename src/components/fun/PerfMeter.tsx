@@ -100,11 +100,11 @@ const PerfMeter = ({ stats }: { stats: PerfStats }) => {
     ['Session total', fmtCost(stats.sessionCostUsd)],
   ];
 
-  // left-16 rather than left-4: Next's dev-mode indicator parks itself in the
-  // bottom-left corner and sat directly on top of this, which made the meter
-  // look like it had disappeared.
+  // Bottom-left corner. Next's dev-mode indicator overlaps this during local
+  // development only — it is not part of a production build, so the corner is
+  // clear on the deployed site.
   return (
-    <div className="pointer-events-auto fixed bottom-4 left-16 z-40 font-mono text-xs">
+    <div className="pointer-events-auto fixed bottom-4 left-4 z-40 font-mono text-xs">
       <button
         onClick={() => setOpen((o) => !o)}
         className="flex items-center gap-2 rounded-full border border-black/10 bg-white/95 px-3 py-1.5 shadow-md backdrop-blur transition hover:bg-white dark:border-white/15 dark:bg-neutral-900/95 dark:hover:bg-neutral-900"
