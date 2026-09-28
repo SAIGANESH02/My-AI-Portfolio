@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 // stored lowercase; incoming e.key is lowercased before comparing
@@ -46,12 +46,14 @@ const PHRASES: { trigger: string; fire: () => void }[] = [
 const EasterEggs = () => {
   const keysRef = useRef<string[]>([]);
   const charsRef = useRef('');
+  const [terminal, setTerminal] = useState(false);
+
+  const exitTerminal = useCallback(() => {
+    document.documentElement.classList.remove('terminal-mode');
+    setTerminal(false);
+  }, []);
 
   useEffect(() => {
-    const exitTerminal = () => {
-      document.documentElement.classList.remove('terminal-mode');
-    };
-
     const onKeyDown = (e: KeyboardEvent) => {
       // --- Konami code -> terminal mode ---
       keysRef.current = [...keysRef.current, e.key.toLowerCase()].slice(
@@ -64,8 +66,9 @@ const EasterEggs = () => {
         keysRef.current = [];
         const root = document.documentElement;
         const on = root.classList.toggle('terminal-mode');
+        setTerminal(on);
         toast(on ? 'TERMINAL MODE ENGAGED' : 'Back to normal', {
-          description: on ? 'Press Esc to exit. Or don\'t.' : undefined,
+          description: on ? 'Esc, or the exit button, whenever you like.' : undefined,
         });
       }
 
@@ -84,9 +87,18 @@ const EasterEggs = () => {
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, []);
+  }, [exitTerminal]);
 
-  return null;
+  // Konami is undiscoverable enough; getting back out should not be.
+  if (!terminal) return null;
+  return (
+    <button
+      onClick={exitTerminal}
+      className="fixed bottom-5 left-1/2 z-[10000] -translate-x-1/2 rounded-full border-2 border-black bg-white px-5 py-2.5 font-mono text-xs font-bold tracking-wider text-black shadow-xl transition hover:scale-105"
+    >
+      EXIT TERMINAL MODE
+    </button>
+  );
 };
 
 export default EasterEggs;

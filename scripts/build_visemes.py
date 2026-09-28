@@ -125,15 +125,18 @@ def main() -> None:
               f"(most-closed was {int(members[np.argmin(opens[members])])} at "
               f"width {widths[members[np.argmin(opens[members])]]:.3f})")
 
-        # Ramp upward from the resting face so frame 0 *is* the idle image and
-        # the transition into speech has nothing to jump over.
-        lo, hi = opens[idle], m_hi
-        chosen: list[int] = [idle]
-        for i in range(1, LEVELS):
+        # The speaking ramp starts from the most *neutral* closed mouth, not
+        # from the smile. Holding one grin and just opening it looks like a
+        # single expression being puppeted; resting on a smile and relaxing
+        # into a neutral face to speak is what people actually do. Both come
+        # from the same pose cluster, so the swap does not move the head.
+        lo, hi = m_lo, m_hi
+        chosen: list[int] = []
+        for i in range(LEVELS):
             target = lo + (hi - lo) * i / (LEVELS - 1)
             order = members[np.argsort(np.abs(opens[members] - target))]
             for cand in order:
-                if int(cand) not in chosen and opens[cand] >= lo:
+                if int(cand) not in chosen and int(cand) != idle:
                     chosen.append(int(cand))
                     break
         chosen.sort(key=lambda idx: opens[idx])
@@ -141,14 +144,17 @@ def main() -> None:
         shutil.rmtree(OUT_DIR, ignore_errors=True)
         os.makedirs(OUT_DIR, exist_ok=True)
 
-        total = 0
-        for i, idx in enumerate(chosen):
-            tile = Image.open(frames[idx]).crop(CONTENT).resize(
+        def emit(src_idx: int, name: str) -> int:
+            tile = Image.open(frames[src_idx]).crop(CONTENT).resize(
                 (TILE, TILE), Image.LANCZOS
             )
-            path = os.path.join(OUT_DIR, f"viseme-{i:02d}.webp")
+            path = os.path.join(OUT_DIR, name)
             tile.save(path, "WEBP", quality=86, method=6)
-            total += os.path.getsize(path)
+            return os.path.getsize(path)
+
+        total = emit(idle, "viseme-idle.webp")
+        for i, idx in enumerate(chosen):
+            total += emit(idx, f"viseme-{i:02d}.webp")
 
         print(f"{len(chosen)} frames -> {OUT_DIR}: {total/1024:.0f} KB total")
 
@@ -180,8 +186,13 @@ def main() -> None:
                 f"  {{ length: {LEVELS} }},\n"
                 "  (_, i) => `/avatar/viseme-${String(i).padStart(2, '0')}.webp`\n"
                 ");\n"
-                "/** Resting face — also the poster/preload image. */\n"
-                "export const VISEME_IDLE = VISEME_SRCS[0];\n"
+                "/**\n"
+                " * Resting face: a smile. Deliberately NOT part of the speech\n"
+                " * ramp, which starts from a neutral mouth — holding one grin\n"
+                " * and only opening it reads as a single puppeted expression.\n"
+                " * Same pose cluster, so swapping does not move the head.\n"
+                " */\n"
+                "export const VISEME_IDLE = '/avatar/viseme-idle.webp';\n"
                 "// Normalized openness of each frame (0 = closed, 1 = widest).\n"
                 f"export const VISEME_OPENNESS: number[] = {json.dumps(norm)};\n"
             )

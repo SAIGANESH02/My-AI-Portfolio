@@ -103,9 +103,14 @@ export default function Home() {
       <div className="absolute top-6 right-8 z-20 flex items-center gap-2">
         <ExtrasMenu
           trigger={
-            <button className="flex cursor-pointer items-center gap-1.5 rounded-full border bg-white/40 px-3 py-2 text-xs font-medium backdrop-blur-lg transition-all hover:scale-105 hover:shadow-md dark:bg-neutral-800/40">
-              <Sparkles className="h-3.5 w-3.5 text-blue-500" />
-              <span className="hidden sm:inline">Extras</span>
+            <button className="relative flex cursor-pointer items-center gap-2 rounded-full border border-amber-300 bg-gradient-to-r from-amber-100 to-orange-100 px-4 py-2 text-sm font-semibold text-amber-900 shadow-lg transition-all hover:scale-105 hover:shadow-xl dark:border-amber-700 dark:from-amber-950 dark:to-orange-950 dark:text-amber-200">
+              <Sparkles className="h-4 w-4" />
+              Extras
+              {/* nudge: there are hidden things here and nobody finds them */}
+              <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-amber-500" />
+              </span>
             </button>
           }
         />

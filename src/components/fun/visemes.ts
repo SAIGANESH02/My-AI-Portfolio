@@ -5,7 +5,12 @@ export const VISEME_SRCS: string[] = Array.from(
   { length: 12 },
   (_, i) => `/avatar/viseme-${String(i).padStart(2, '0')}.webp`
 );
-/** Resting face — also the poster/preload image. */
-export const VISEME_IDLE = VISEME_SRCS[0];
+/**
+ * Resting face: a smile. Deliberately NOT part of the speech
+ * ramp, which starts from a neutral mouth — holding one grin
+ * and only opening it reads as a single puppeted expression.
+ * Same pose cluster, so swapping does not move the head.
+ */
+export const VISEME_IDLE = '/avatar/viseme-idle.webp';
 // Normalized openness of each frame (0 = closed, 1 = widest).
-export const VISEME_OPENNESS: number[] = [0.0, 0.0124, 0.1199, 0.254, 0.2792, 0.3097, 0.3721, 0.4867, 0.5478, 0.6465, 0.8456, 1.0];
+export const VISEME_OPENNESS: number[] = [0.0, 0.0351, 0.2869, 0.3645, 0.4613, 0.4796, 0.5466, 0.6294, 0.6735, 0.7447, 0.8885, 1.0];

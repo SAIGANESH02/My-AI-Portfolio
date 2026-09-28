@@ -49,7 +49,7 @@ function framePosition(openness: number) {
 let warmed: HTMLImageElement[] | null = null;
 function warmFrames() {
   if (warmed || typeof window === 'undefined') return;
-  warmed = VISEME_SRCS.map((src) => {
+  warmed = [...VISEME_SRCS, VISEME_IDLE].map((src) => {
     const img = new window.Image();
     img.src = src;
     return img;
@@ -111,19 +111,30 @@ const AvatarFace = ({
       const rate = target > smoothed ? 22 : 9;
       smoothed += (target - smoothed) * (1 - Math.exp(-rate * dt));
 
-      const { lo, hi, t } = framePosition(smoothed);
       if (ref.current && topRef.current) {
-        // Only touch src when the pair changes; reassigning every frame would
-        // restart decoding and flicker.
-        if (lo !== lastLo) {
-          ref.current.src = VISEME_SRCS[lo];
-          lastLo = lo;
+        // At rest, show the smile — it is not part of the speech ramp, whose
+        // closed end is deliberately neutral.
+        if (modeRef.current === 'idle' && smoothed < 0.02) {
+          if (lastLo !== -2) {
+            ref.current.src = VISEME_IDLE;
+            topRef.current.style.opacity = '0';
+            lastLo = -2;
+            lastHi = -2;
+          }
+        } else {
+          const { lo, hi, t } = framePosition(smoothed);
+          // Only touch src when the pair changes; reassigning every frame
+          // would restart decoding and flicker.
+          if (lo !== lastLo) {
+            ref.current.src = VISEME_SRCS[lo];
+            lastLo = lo;
+          }
+          if (hi !== lastHi) {
+            topRef.current.src = VISEME_SRCS[hi];
+            lastHi = hi;
+          }
+          topRef.current.style.opacity = String(lo === hi ? 0 : t);
         }
-        if (hi !== lastHi) {
-          topRef.current.src = VISEME_SRCS[hi];
-          lastHi = hi;
-        }
-        topRef.current.style.opacity = String(lo === hi ? 0 : t);
       }
 
       // Continuous motion cue alongside the discrete mouth steps — the ring
