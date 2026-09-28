@@ -100,11 +100,14 @@ const PerfMeter = ({ stats }: { stats: PerfStats }) => {
     ['Session total', fmtCost(stats.sessionCostUsd)],
   ];
 
+  // left-16 rather than left-4: Next's dev-mode indicator parks itself in the
+  // bottom-left corner and sat directly on top of this, which made the meter
+  // look like it had disappeared.
   return (
-    <div className="pointer-events-auto fixed bottom-4 left-4 z-40 font-mono text-xs">
+    <div className="pointer-events-auto fixed bottom-4 left-16 z-40 font-mono text-xs">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-3 py-1.5 shadow-sm backdrop-blur transition hover:bg-white dark:border-white/10 dark:bg-black/60 dark:hover:bg-black/80"
+        className="flex items-center gap-2 rounded-full border border-black/10 bg-white/95 px-3 py-1.5 shadow-md backdrop-blur transition hover:bg-white dark:border-white/15 dark:bg-neutral-900/95 dark:hover:bg-neutral-900"
         aria-expanded={open}
       >
         <Activity className="h-3.5 w-3.5 shrink-0 text-green-600 dark:text-green-400" />
